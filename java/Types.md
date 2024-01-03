@@ -188,17 +188,16 @@ public static void main(String[] args) {
     float b = 0.0f;
 
     System.out.println("Before Pass By Value");
-    System.out.println("a : " + a); // 10
-    System.out.println("b : " + b); // b
+    System.out.println("a : " + a);
+    System.out.println("b : " + b);
 
     referencePass.passByValue(a, b);
 
     System.out.println("After Pass By Value");
-    System.out.println("a : " + a); // 10
-    System.out.println("b : " + b); // b
+    System.out.println("a : " + a);
+    System.out.println("b : " + b);
 }
 ```
-
 결과는 다음과 같다. main 메소드에서 초기화한 정수 a, 문자열 b 변수를 passByValue 메소드의 인자로 넘겨 내부에서 값을 수정해도 원본에는 영향을 주지 않는 것을 확인할 수 있다.
 ```
 Before Pass By Value
@@ -212,9 +211,8 @@ a : 0
 b : 0.0
 ```
 
-결론적으로 자바에서 기본형 타입의 매개변수를 넘겨줄때는 Pass By Value로 데이터를 전달한다.
-
 ### Pass By Reference
+Pass By Reference는 실제 주소 값을 전달해서 값을 수정하면 원본의 데이터가 수정되도록 하는 방식이다.
 
 위에서 작성한 Human 클래스를 활용해서 예시를 들어보자.
 ```java
@@ -231,4 +229,39 @@ public class Human {
 }
 ```
 
+비슷하게 passByReference 메소드를 작성해 Human 객체의 멤버 변수를 수정하는 코드를 구현했다
+```java
+public class ReferencePass {
+    public void passByReference(Human human) {
+        human.setName("수정된 이름");
+    }
+}
 
+```
+main 메소드에서 name 멤버 변수를 초기화 해주는 생성자를 호출해 객체를 생성하고 passByReference 호출해서 원본 객체의 전과 후를 비교해보자.
+```java
+public static void main(String[] args) {
+    ReferencePass referencePass = new ReferencePass();
+
+    Human human = new Human("원본 이름");
+
+    System.out.println("Before Pass By Reference");
+    System.out.println("name : " + human.getName());
+
+    referencePass.passByReference(human);
+
+    System.out.println("After Pass By Reference");
+    System.out.println("name : " + human.getName());
+}
+```
+결과는 다음과 같다. main 메소드에서 "원본 이름"으로 생성한 human 객체를 passByReference의 인자로 넘겨 멤버 변수를 내부에서 수정하면 실제로 원본 객체의 멤버 변수 값이 "수정된 이름"으로 바뀌는걸 확인할 수 있다.
+```
+Before Pass By Reference
+name : 원본 이름
+After Pass By Reference
+name : 수정된 이름
+``` 
+
+## Java는 기본 자료형이든 참조 자료형이든 전부 Pass By Value
+
+작성 예정
