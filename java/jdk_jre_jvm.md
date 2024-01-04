@@ -1,4 +1,4 @@
-# JDK, JRE, JVM
+# JDK, JRE, JVM의 차이점
 
 ![Stack](./img/jdk_jre_jvm.png)
 
