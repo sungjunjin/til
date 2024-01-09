@@ -292,6 +292,32 @@ array[4] = child2;
 배열을 돌면서 자바에서 제공하는 instanceof 연산자를 사용해 객체가 특정 클래스에 인스턴스인지 판단한다. 사용법은 다음과 같다.
 `<변수명> instanceof <클래스명>`
 
+여기서 주의해야 할 점은 instanceof 연산자는 부모 클래스와 비교해도 결과는 true가 나온다. 따라서 맨 첫번째 if-else 구문에 부모 객체와 instanceof 비교를 해버리면 전부 결과 true가 되어 전부 부모 클래스 타입의 분기문을 타게 된다.
+```java
+public static void main(String[] args) {
+    // 배열 생성 생략
+
+    for(Parent p: array) {
+        if(p instanceof Parent) {
+            System.out.println("Parent 타입");
+        } else if (p instanceof Child) {
+            System.out.println("Child 타입");
+        }
+    }
+}
+```
+
+실행 결과
+```
+> Task :Java.main()
+Parent 타입
+Parent 타입
+Parent 타입
+Parent 타입
+Parent 타입
+```
+
+따라서 가장 하위 계층의 클래스 타입 부터 비교를 해야한다.
 ```java
     public static void main(String[] args) {
         // 배열 생성 생략
@@ -320,27 +346,6 @@ Child's Name is
 Child's Name is
 ```
 
-여기서 주의해야 할 점은 instanceof 연산자는 부모 클래스와 비교해도 결과는 true가 나온다. 따라서 첫번째 if-else 구문에 부모 객체와 instanceof 비교를 해버리면 전부 결과 true가 되어 전부 부모 클래스 타입의 분기문을 타게 된다.
-```java
-public static void main(String[] args) {
-    // 배열 생성 생략
+### Polymorphism
+이런 특성은 객체지향의 다형성과 관련이 있다. 다형성이란 한개의 타입에 여러 객체를 대입할 수 있는 성질을 뜻한다. 또한 하나의 타입에 담긴 객체들에게 동일한 명령을 해도 객체의 종류마다 각각 다르게 동작하는 것을 뜻한다.
 
-    for(Parent p: array) {
-        if(p instanceof Parent) {
-            System.out.println("Parent 타입");
-        } else if (p instanceof Child) {
-            System.out.println("Child 타입");
-        }
-    }
-}
-```
-
-실행 결과
-```
-> Task :Java.main()
-Parent 타입
-Parent 타입
-Parent 타입
-Parent 타입
-Parent 타입
-```
