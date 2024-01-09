@@ -76,7 +76,7 @@ Parent Constructor
 Child Constructor
 ```
 
-실행 결과를 보면 부모 클래스가 먼저 호출되고 나서 자식 클래스의 생성자가 호출되는 것을 확인할 수 있다. 자식 생성자 호출 시 부모 클래스에 별도로 정의된 생성자가 없으면 자동적으로 부모 클래스의 기본 생성자를 호출한다.
+실행 결과를 보면 부모 클래스의 생성자가 먼저 호출되고 나서 자식 클래스의 생성자가 호출되는 것을 확인할 수 있다. 자식 생성자 호출 시 부모 클래스에 별도로 정의된 생성자가 없으면 자동적으로 부모 클래스의 기본 생성자를 호출한다.
 
 **만약 부모 클래스에 기본 생성자 외에 별도의 생성자가 정의되어 있다면 기본 생성자 호출이 불가능하다**.
 ```java
@@ -141,7 +141,7 @@ public class Parent {
 }
 ```
 
-자식 클래스에서 동일한 메소드 시그니처를 가지는 printName 메소드를 출력 문구를 자식 클래스에 맞게 수정하도록 메소드를 Override 해보자.
+자식 클래스에서 동일한 메소드 시그니처를 가지는 printName 메소드를 출력 문구를 자식 클래스에 맞게 수정하도록 메소드를 Overriding 해보자.
 ```java
 public class Child extends Parent {
     public Child(String name) {
@@ -325,7 +325,7 @@ Child's Name is
 public static void main(String[] args) {
     // 배열 생성 생략
 
-        for(Parent p: array) {
+    for(Parent p: array) {
         if(p instanceof Parent) {
             System.out.println("Parent 타입");
         } else if (p instanceof Child) {
@@ -333,4 +333,14 @@ public static void main(String[] args) {
         }
     }
 }
+```
+
+실행 결과
+```
+> Task :Java.main()
+Parent 타입
+Parent 타입
+Parent 타입
+Parent 타입
+Parent 타입
 ```
