@@ -1,12 +1,10 @@
 # JVM
 
 JVM의 구조는 크게 클래스 로더, 메모리, 실행 영역으로 나뉜다.
-
-![jvm](./img/jvm.png)
+<img src="./img/jvm.png" width="700" height="450"/>
 
 ## Class Loader
-
-![class-loader](./img/class_loader.png)
+<img src="./img/class_loader.png" width="700" height="450"/>
 
 클래스 로더는 컴파일된 .class 파일을 읽고 JVM의 메모리 영역에 저장하는 역할을 담당한다. 
 
@@ -53,8 +51,7 @@ JVM의 구조는 크게 클래스 로더, 메모리, 실행 영역으로 나뉜�
 ### Stack
 
 실행 환경에서 생성된 스레드별로 스택을 생성한다. 스택 안에는 호출된 메소드의 정보가 담긴 스택 프레임이 저장된다. 스레드가 종료되면 스택도 사라진다.
-
-![stack](./img/stack.png)
+<img src="./img/stack.png" width="700" height="450"/>
 
 ### PC(Program Counter) Register
 
