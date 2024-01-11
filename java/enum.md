@@ -82,7 +82,7 @@ public abstract class Enum<E extends Enum<E>>
     }
 ```
 
-주석을 생략한 java.lang.Enum 클래스이다. 우선 생성자는 protected 접근 제어자로 되어 있지만 프로그래머가 직접 호출할 수 없고 컴파일러에 의해서 클래스가 참조되는 시점에 한번 실행된다.
+주석을 생략한 java.lang.Enum 클래스이다. 우선 생성자는 protected 접근 제어자로 되어 있지만 프로그래머가 직접 호출할 수 없고 컴파일러에 의해서 클래스가 참조되는 시점에 한번 실행된다. 상수 하나당 인스턴스는 1개이며 public static final로 공개된다.
 
 name, ordinal의 멤버 변수는 final로 선언되어 있다. 나머지 Enum 클래스에서 사용하는 주요 메소드인 ordinal, equals, hashCode는 모두 final로 선언되어 오버라이딩을 막고 있다.
 
@@ -233,7 +233,7 @@ public enum OverTimeValues {
 }
 ```
 
-enum 클래스에 선언된 상수와 관련된 동작의 메소드를 따로 구현할 수 있다. 구현하는 방법은 다음과 같다.
+enum 클래스에 선언된 상수와 관련된 상태 기반 동작의 메소드를 따로 구현할 수 있다. 구현하는 방법은 다음과 같다.
 1. 추상 메소드를 선언한다.
 2. enum 객체마다 추상 메소드를 오버라이드하여 구현한다.
 3. `enum 객체.메소드명`으로 구현한 메소드를 호출한다.
