@@ -226,11 +226,13 @@ public class Son extends Parent{
 }
 ```
 
-여기서 Son 클래스의 메소드별로 어노테이션에 선언한 number, text에 대한 값을 확인하는 방법은 다음과 같다.
+여기서 Son 클래스의 메소드별로 어노테이션에 선언한 number, text에 대한 값을 확인하는 방법은 다음과 같다. 
 ```java
 public static void main(String[] args) {
+    // Class에 선언되어 있는 메소드의 목록을 getDeclaredMethods()로 가져온다
     Method[] methods = Son.class.getDeclaredMethods();
 
+    // 메소드별로 반복문을 돌면서 선언된 어노테이션이 있는지 확인하고, 있을 경우 어노테이션의 선언된 값들을 출력한다
     for(Method method: methods) {
         CustomAnnotation annotation = method.getAnnotation(CustomAnnotation.class);
 
@@ -242,7 +244,21 @@ public static void main(String[] args) {
             System.out.println("number : " + number);
             System.out.println("text : " + text);
             System.out.println();
+        } else {
+            System.out.println("Method : " + method.getName());
+            System.out.println("There is no annotation in this method");
         }
     }
 }
+```
+메소드 별로 선언한 어노테이션에 대한 값이 출력된다.
+```
+> Task :Java.main()
+Method : print
+number : 10
+text : This is the first annotation
+
+Method : printName
+number : 10
+text : Son
 ```
