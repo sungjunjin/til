@@ -143,3 +143,5 @@ fabric.properties
 .idea/misc.xml
 
 .idea/jpa-buddy.xml
+
+.DS_Store
