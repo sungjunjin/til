@@ -5,18 +5,18 @@
 Java의 대표적인 불변객체는 String, Integer, Long, Double 등이 있다.
 
 ## 불변객체를 만드는 방법
-간단하게 name 이라는 문자열 멤버 변수를 갖는 자동차(Car) 클래스를 예시로 들어보자.
+간단하게 serialNo 이라는 정수형 멤버 변수를 갖는 자동차(Car) 클래스를 예시로 들어보자.
 
 ```java
 public class Car {
-    private String name;
+    private int serialNo;
 
-    public Car(String name) {
-        this.name = name;
+    public Car(int serialNo) {
+        this.serialNo = serialNo;
     }
 
-    public String getName() {
-        return this.name;
+    public int getSerialNo() {
+        return serialNo;
     }
 }
 ```
@@ -25,31 +25,31 @@ public class Car {
 클래스에 setter를 제공할 경우 setter를 제공한 해당 멤버변수에 접근해 값을 수정할 수 있다. 
 ```java
 public class Car {
-    private String name;
+    private int serialNo;
 
     // 생성자, getter 생략
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSerialNo(int serialNo) {
+        this.serialNo = serialNo;
     }
 }
 ```
 
 ```java
 public static void main(String[] args) {
-    Car car = new Car("ferrari");
-    System.out.println("Car name : " + car.getName());
+    Car car = new Car(1234);
+    System.out.println("Serial Number : " + car.getSerialNo());
 
-    car.setName("lamborghini");
-    System.out.println("Car name : " + car.getName());
+    car.setSerialNo(5678);
+    System.out.println("Serial Number : " + car.getSerialNo());
 }
 ```
 
 실행 결과
 ```
 > Task :Java.main()
-Car name : ferrari
-Car name : lamborghini
+Serial Number : 1234
+Serial Number : 5678
 ```
 
 ### 모든 멤버 변수를 private, final로 선언한다.
@@ -57,19 +57,19 @@ Car name : lamborghini
 
 ```java
 public class Car {
-    private final String name;
+    private final int serialNo;
 
     // 생성자, getter 생략
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSerialNo(int serialNo) {
+        this.serialNo = serialNo;
     }
 }
 ```
-실행 결과
+컴파일 결과
 ```
-error: cannot assign a value to final variable name
-        this.name = name;
+error: cannot assign a value to final variable serialNo
+        this.serialNo = serialNo;
 ```
 멤버 변수에 final 키워드를 사용하고 setter를 제공하면 컴파일 에러가 발생한다.
 
@@ -175,6 +175,7 @@ Hyundai
 
 <strong>2. 참조 자료형 변수를 초기화 할 때 새로운 객체를 만들어 초기화 </strong>
 객체를 생성할때 내부 참조형 멤버 변수를 외부에서 가지고 있다면 사용 할 수 있다.
+
 ```java
 public static void main(String[] args) {
     Brand brand = new Brand("Hyundai"); // 초기화에 필요한 내부 멤버 변수를 외부에서 가지고 있음
