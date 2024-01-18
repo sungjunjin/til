@@ -57,21 +57,14 @@ Serial Number : 5678
 
 ```java
 public class Car {
-    private final int serialNo;
+    private final int serialNo = 1234;
+    private final String name;
 
-    // 생성자, getter 생략
-
-    public void setSerialNo(int serialNo) {
-        this.serialNo = serialNo;
+    public Car(String name) {
+        this.name = name; // 생성자에서 초기화
     }
 }
 ```
-컴파일 결과
-```
-error: cannot assign a value to final variable serialNo
-        this.serialNo = serialNo;
-```
-멤버 변수에 final 키워드를 사용하고 setter를 제공하면 컴파일 에러가 발생한다.
 
 ### 클래스를 final로 선언한다
 불변 객체를 만들고자 하는 클래스의 상속을 허용하면 자식 클래스에 의해서 불변 상태가 깨질 여지가 있다. 따라서 클래스에 final 키워드를 사용해 상속이 불가능한 클래스로 만들어 준다.
@@ -139,7 +132,7 @@ Kia
 
 <strong>1. 참조 자료형 변수를 반환 할 때 새로운 객체를 만들어 반환</strong>
 
-위 예시처럼 불변 객체에 상태를 바꿀 수 있는 setter 메소드가 있을 경우 사용하면 좋은 방법이다.
+위 예시처럼 참조형 멤버 변수에 상태를 바꿀 수 있는 setter 메소드가 있을 경우 사용하면 좋은 방법이다.
 
 ```java
 public class Car {
@@ -159,7 +152,7 @@ public static void main(String[] args) {
 
     System.out.println(car.getBrand().getName());
 
-    Brand brand =car.getBrand(); // 새로운 주소의 Brand 객체
+    Brand brand = car.getBrand(); // 새로운 주소의 Brand 객체
     brand.setName("Kia");
 
     System.out.println(car.getBrand().getName());
@@ -211,7 +204,7 @@ Hyundai
 ```
 
 #### Collection.unmodifiableList
-방어적 복사에 대안으로 사용할 수 있는 방법이다. 내부 멤버 변수에 컬렉션이 있는 경우 컬렉션을 반환하는 getter 메소드를 작성할 때 
+내부 멤버 변수에 컬렉션이 있는 경우 사용할 수 있는 방법이다. 컬렉션을 반환하는 getter 메소드를 작성할 때 
 `Collection.unmodifiableList`로 감싸서 반환하면 외부에서 컬렉션에 대한 수정을 방지할 수 있다. `Collection.unmodifiableList`로 리턴되는 리스트는 add, remove, set, addAll과 같은 컬렉션의 내부 요소를 수정하는 메소드를 호출했을 경우 UnsupportedOperationException 예외를 발생시킨다.
 
 예를 들어 멤버 변수에 Owner 목록을 가지는 자동차 클래스가 있다. 컬렉션 타입의 owners 멤버 변수를 반환하는 getter는 Collection.unmodifiableList로 감싸서 반환된다.
