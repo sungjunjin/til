@@ -62,7 +62,7 @@ ArrayList에 데이터를 삭제하려면 다음과 같은 메소드를 사용�
 ArrayList 내부 데이터를 조회와 기타 ArrayList의 정보를 반환하는 메소드이다.
 | 메소드 | 설명 |
 | --- | --- |
-| get(int index) | 매개 변수로 넘어온 index에 해당하는 데이터를 반환한다 |
+| E get(int index) | 매개 변수로 넘어온 index에 해당하는 데이터를 반환한다 |
 | int size() | ArrayList에 들어있는 객체의 수를 반환한다 |
 | int indexOf(Object o) | 매개 변수로 넘어온 객체 o의 배열 인덱스를 반환한다 |
 | int lastIndexOf(Object o) | 매개 변수로 넘어온 객체 o와 동일한 데이터의 배열 인덱스를 반환한다 |
