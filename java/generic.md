@@ -18,7 +18,7 @@ public class CastingDto {
 }
 ```
 
-CastingDto를 메인 메소드에서 활용해보자. 멤버 변수의 타입이 Object이므로 아무 타입이든 저장할 수 있다. 간단한 예시로 String, StringBuilder 타입의 데이터를 setter 메소드로 초기화하고 getter 메소드로 가져와보자.
+CastingDto를 메인 메소드에서 활용해보자. 멤버 변수의 타입이 Object이므로 아무 타입이든 저장할 수 있다. 간단한 예시로 String, StringBuilder 타입의 데이터를 setObject 메소드로 초기화하고 getObject 메소드로 가져와보자.
 
 ```java
 public static void main(String[] args) {
@@ -32,13 +32,16 @@ public static void main(String[] args) {
 }
 ```
 
-CastingDto 클래스의 멤버 변수는 Object 타입이라 setter 메소드의 매개변수에는 아무 타입이나 들어갈 수 있다. 하지만 getter 메소드를 사용할때는 Object 타입을 반환하므로 getter 메소드로 반환되는 객체에 대한 타입을 정확히 알고 형변환을 일일이 해줘야 하는 번거로움이 있다. 
+CastingDto 클래스의 멤버 변수는 Object 타입이라 setObject 메소드의 매개변수에는 아무 타입이나 들어갈 수 있다. 하지만 getObject 메소드를 사용할때는 Object 타입을 반환한다. 따라서 반환되는 객체에 대한 타입을 정확히 알고 형변환을 일일이 해줘야 하는 번거로움이 있다. 
 
-CastingDto를 사용하는 프로그래머가 결정할 수 없을까? 제네릭을 사용하면 가능하다.
+CastingDto를 사용하는 프로그래머가 내부 멤버변수 object의 타입을 직접 결정할 수 없을까? 제네릭을 사용하면 가능하다.
 
 ## 제네릭 클래스
 
-제네릭 문법을 적용하고 하는 클래스옆에 `<T>`를 사용한다. 여기서 T는 type을 의미하고 "내부 멤버 변수 object의 타입은 사용자가 정해라" 라는 의미를 가진다. 
+제네릭 문법을 적용하고 하는 클래스 이름 옆에 `<T>`를 사용한다. 여기서 T는 **타입 파라미터**라고 한다. "내부 멤버 변수 object의 타입은 사용자가 정해라" 라는 의미를 가진다고 볼 수 있다. 
+
+제네릭에서 <>안에 들어 갈 수 있는 자료형은 **참조 자료형**뿐이다 (Integer, Double, Float등의 wrapper 클래스가 존재하는 이유 증 하나다).
+
 ```java
 public class CastingGenericDto<T> {
     private T object;
@@ -63,8 +66,6 @@ T외에도 E, K, V 등과 같이 내부 데이터의 속성에 따라 자바에�
 
 ### 타입 파라미터와 구체화 과정
 String 타입으로 GenericDto를 선언하면 타입 파라미터로 String 타입이 전달되고 내부에서 T 타입을 활용하는 모든 멤버 변수와 메소드에 전파가 된다. 이를 구체화 (Specialization) 이라고 한다.
-
-제네릭에서 <>안에 들어 갈 수 있는 자료형은 **참조 자료형**이다 (Integer, Double, Float등의 wrapper 클래스가 존재하는 이유 증 하나다).
 
 예를들어 아래와 같이 타입 변수 T에 String 타입을 전달하면
 ```java
