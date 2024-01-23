@@ -42,11 +42,13 @@ HashSet에 제공하는 주요 메소드들은 다음과 같다
 | boolean remove(Object o) | 매개 변수로 넘어온 객체를 삭제한다 |
 | int size() | 데이터의 개수를 반환한다 |
 
-# Queue
-Queue는 먼저 들어온 데이터가 먼저 나가는 FIFO(First In First Out)의 성질을 가진 데이터 구조이다. 
+# Queue & Deque
+Queue는 먼저 들어온 데이터가 먼저 나가는 FIFO(First In First Out)의 성질을 가진 데이터 구조이다. Deque는 Queue 인터페이스를 확장한 인터페이스로써 Queue의 처음과 끝의 데이터를 처리할 수 있는 기능을 지원한다.
 
 ## LinkedList
-LinkedList는 List, Queue 인터페이스의 구현체로써 리스트, 큐의 역할을 둘 다 할 수 있다. 각 노드(객체)끼리의 주소를 서로 가르켜 이어지는 구조를 가진다. 자바 컬렉션에서 사용하는 LinkedList는 양방향 연결 리스트로써 이전 노드와 다음 노드의 정보를 가르키고 있다. 
+LinkedList는 List, Queue 인터페이스의 구현체로써 리스트, 큐의 역할을 둘 다 할 수 있다. 각 노드(객체)끼리의 주소를 서로 가르켜 이어지는 구조를 가진다. LinkedList의 종류는 단방향 연결 리스트(Single linked list), 양방향 연결 리스트(Double linked list), 원형 연결 리스트(Circular linked list)등이 있다.
+
+ 자바 컬렉션에서 사용하는 LinkedList는 양방향 연결 리스트로써 노드(객체)에 이전 노드와 다음 노드의 정보를 가지고 있다. 
 ```mermaid
 flowchart LR
 A --- B
@@ -70,32 +72,32 @@ LinkedList가 제공하는 생성자는 다음과 같다. LinkedList는 데이�
 | LinkedList(Collection<? extends E> c) | 매개 변수로 받은 컬렉션을 LinkedList에 저장한 객체를 생성한다 |
 
 ### LinkedList에 데이터를 생성하고 수정하는 다양한 메소드
-LinkedList는 여러 종류의 인터페이스를 구현했기 때문에 중복된 기능을 하는 메소드가 많다. 다음은 LinkedList에서 데이터를 생성, 수정할 수 있는 메소드 목록이다.
+LinkedList는 List, Queue, Deque 인터페이스를 구현했기 때문에 List, Queue, Deque 자료구조의 역할을 할 수 있다. 하지만 중복된 기능을 하는 메소드가 많다는 특징이 있다. 다음은 LinkedList에서 데이터를 생성, 수정할 수 있는 메소드 목록이다.
 
 | 메소드 | 설명 |
 | --- | --- |
-| void addFirst(Object), boolean offerFirst(Object), push(Object) | LinkedList 맨 앞에 데이터를 추가한다 |
-| boolean add(Object), void addLast(Object), boolean offer(Object), boolean offerLast(Object) | LinkedList 맨 마지막에 데이터를 추가한다 |
-| void add(int, Object) | 매개변수로 넘어온 index에 데이터를 추가한다 |
-| boolean addAll(Collection) | 매개변수로 넘어온 컬렉션 객체를 LinkedList의 맨 마지막에 추가한다 |
-| boolean addAll(int, Collection) | 매개변수로 넘어온 컬렉션 객체를 LinkedList의 index에 추가한다 |
-| Object set(int, Object) | 매개변수로 넘어온 index의 객체를 수정하고 기존에 있던 데이터를 반환한다 |
+| void addFirst(E e), boolean offerFirst(E e), push(E e) | LinkedList 맨 앞에 데이터를 추가한다 |
+| boolean add(E e), void addLast(E e), boolean offer(E e), boolean offerLast(E e) | LinkedList 맨 마지막에 데이터를 추가한다 |
+| void add(int index, E e) | 매개변수로 넘어온 index에 데이터를 추가한다 |
+| boolean addAll(Collection<? extends E> c)) | 매개변수로 넘어온 컬렉션 객체를 LinkedList의 맨 마지막에 추가한다 |
+| boolean addAll(int index, Collection) | 매개변수로 넘어온 컬렉션 객체를 LinkedList의 index에 추가한다 |
+| E e set(int index, E e) | 매개변수로 넘어온 index의 객체를 수정하고 기존에 있던 데이터를 반환한다 |
 
 ### LinkedList의 조회 관련 메소드
 | 메소드 | 설명 |
 | --- | --- |
-| Object getFirst(), Object peekFirst(), Object peek(), Object element() | LinkedList 맨 앞에 있는 데이터를 반환한다 |
-| Object getLast(), Object peekLast() | LinkedList 맨 뒤에 있는 데이터를 반환한다 |
-| Object get(int) | 매개변수로 넘어온 index에 해당하는 데이터를 반환한다 |
+| E getFirst(), E peekFirst(), E peek(), E element() | LinkedList 맨 앞에 있는 데이터를 반환한다 |
+| E getLast(), E peekLast() | LinkedList 맨 뒤에 있는 데이터를 반환한다 |
+| E get(int index) | 매개변수로 넘어온 index에 해당하는 데이터를 반환한다 |
 | boolean contains(Object o) | 매개 변수로 넘어온 객체의 존재 여부를 반환한다 |
-| int indexOf(Object) | 매개 변수로 넘어온 객체의 인덱스를 앞에서부터 검색하여 반환한다. 없을 경우 -1을 반환한다 |
-| int lastIndexOf(Object) | 매개 변수로 넘어온 객체의 위치를 끝에서부터 검색하여 반환한다. 없을 경우 -1을 반환한다 |
+| int indexOf(Object o) | 매개 변수로 넘어온 객체의 인덱스를 앞에서부터 검색하여 반환한다. 없을 경우 -1을 반환한다 |
+| int lastIndexOf(Object o) | 매개 변수로 넘어온 객체의 위치를 끝에서부터 검색하여 반환한다. 없을 경우 -1을 반환한다 |
 
 ### LinkedList의 삭제 관련 메소드
 | 메소드 | 설명 |
 | --- | --- |
-| Object remove(), Object removeFirst(), Object poll(), Object pollFirst(), Object pop() | LinkedList 맨 앞에 데이터를 삭제한다 |
-| Object pollLast(), Object removeLast() | LinkedList 맨 마지막에 데이터를 삭제한다 |
-| Object remove(int) | 매개 변수로 넘어온 index의 데이터를 삭제한다 |
-| boolean remove(Object), boolean removeFirstOccurence(Object) | 매개 변수로 넘어온 객체와 동일한 데이터중 맨 앞에서부터 가장 처음에 발견된 데이터를 삭제한다 |
-| boolean removeLastOccurence(Object) | 매개 변수로 넘어온 객체와 동일한 데이터중 맨 뒤에서부터 가장 처음에 발견된  데이터를 삭제한다 |
+| E remove(), E removeFirst(), E poll(), E pollFirst(), E pop() | LinkedList 맨 앞에 데이터를 삭제한다 |
+| E pollLast(), E removeLast() | LinkedList 맨 마지막에 데이터를 삭제한다 |
+| E remove(int index) | 매개 변수로 넘어온 index의 데이터를 삭제한다 |
+| boolean remove(Object o), boolean removeFirstOccurence(Object o) | 매개 변수로 넘어온 객체와 동일한 데이터중 맨 앞에서부터 가장 처음에 발견된 데이터를 삭제한다 |
+| boolean removeLastOccurence(Object o) | 매개 변수로 넘어온 객체와 동일한 데이터중 맨 뒤에서부터 가장 처음에 발견된  데이터를 삭제한다 |
