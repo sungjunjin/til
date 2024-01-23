@@ -1,23 +1,29 @@
-# ArrayList
-ArrayList는 배열의 상위호환 버전으로써 자동으로 확장이 가능한 배열이다. 자바 컬렉션의 List 인터페이스의 구현체중 하나다.
+# List
+List는 순서가 유지되는 컬렉션을 구현하는데 사용한다. 배열과 마찬가지로 index를 사용해 데이터에 접근을 한다.
 
-## ArrayList의 특징
-- ArrayList는 내부적으로 Object 타입의 배열을 사용한다. 내부 코드를 살펴보면 사용하는 배열은 `elementData`라는 변수명으로 다음과 같이 선언되어 있다.
+자바에서 List 인터페이스를 구현한 대표적인 구현체의 특징은 다음과 같다
+- ArrayList : 데이터간 공백을 허용하지 않고, 동적으로 배열의 크기가 변한다
+- LinkedList : 노드끼리 서로 연결하여 리스트처럼 만든 컬렉션이다
+- Vector : Thread safe하다
+- Stack : 나중에 들어온 값을 먼저 처리하는 LIFO (후입선출)의 구조를 가진다. Thread safe하다
+
+## ArrayList
+ArrayList는 배열의 상위호환 버전으로써 자동으로 확장이 가능한 배열이다. 자바 컬렉션의 List 인터페이스의 구현체중 하나다. ArrayList는 내부적으로 Object 타입의 배열을 사용한다. 내부 코드를 살펴보면 사용하는 배열은 `elementData`라는 변수명으로 다음과 같이 선언되어 있다.
     
-    ```java
-    public class ArrayList<E> extends AbstractList<E>
-            implements List<E>, RandomAccess, Cloneable, java.io.Serializable
-    {
-        // 나머지 생략
-    
-        /**
-         * The array buffer into which the elements of the ArrayList are stored.
-         * The capacity of the ArrayList is the length of this array buffer. Any
-         * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
-         * will be expanded to DEFAULT_CAPACITY when the first element is added.
-         */
-        transient Object[] elementData; // non-private to simplify nested class access
-    ```
+```java
+public class ArrayList<E> extends AbstractList<E>
+        implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+{
+    // 나머지 생략
+
+    /**
+        * The array buffer into which the elements of the ArrayList are stored.
+        * The capacity of the ArrayList is the length of this array buffer. Any
+        * empty ArrayList with elementData == DEFAULTCAPACITY_EMPTY_ELEMENTDATA
+        * will be expanded to DEFAULT_CAPACITY when the first element is added.
+        */
+    transient Object[] elementData; // non-private to simplify nested class access
+```
 
 - ArrayList는 배열과는 반대로 중간에 빈 데이터가 존재하지 않는 연속적인 데이터의 리스트 구조를 가진다. 따라서 삽입/삭제 연산이 일어날때마다 빈 배열을 채워주기 위해 데이터들을 이동하는 작업을 수행하므로 삽입/삭제 동작이 상대적으로 느리다는 단점이 있다. 
 

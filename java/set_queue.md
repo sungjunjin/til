@@ -1,6 +1,12 @@
 # Set
 Set은 데이터의 중복을 허용하지 않고 순서와 사관없이 데이터를 저장할 수 있는 자료구조이다. 주로 어떤 데이터가 존재하는지에 대한 확인의 용도로 사용한다.
-## HashSet의 특징
+
+자바에서 Set 인터페이스를 구현한 대표적인 구현체의 특징은 다음과 같다
+- HashSet : 해시맵을 사용해 데이터를 처리한다
+- LinkedHashSet: 순서를 보장한다
+- TreeSet: 데이터를 정렬한다
+
+## HashSet
 HashSet은 컬렉션의 Set 인터페이스의 구현체중에 가장 성능이 좋다. 해시맵(Hash Map)을 사용해 데이터를 처리한다. 
 
 HashMap의 Key는 객체 그 자체를, Value는 HashSet에서 자체적으로 구현한 더미 객체를 사용한다.
@@ -29,7 +35,7 @@ HashSet이 제공하는 생성자는 다음과 같다.
 
 여기서 `loadFactor = 총 데이터의 개수 / 저장공간`을 의미한다. 기본값은 0.75f이다. 데이터가 HashSet에 계속 추가되어 loadFactor를 넘어서는 경우에는 저장 공간의 크기를 늘리고 데이터를 다시 배치하는 rehashing 작업이 이루어진다.
 
-### 메소드
+### HashSet의 주요 메소드
 HashSet에 제공하는 주요 메소드들은 다음과 같다
 | 메소드 | 설명 |
 | --- | --- |
@@ -44,6 +50,11 @@ HashSet에 제공하는 주요 메소드들은 다음과 같다
 
 # Queue & Deque
 Queue는 먼저 들어온 데이터가 먼저 나가는 FIFO(First In First Out)의 성질을 가진 데이터 구조이다. Deque는 Queue 인터페이스를 확장한 인터페이스로써 Queue의 처음과 끝의 데이터를 처리할 수 있는 기능을 지원한다.
+
+자바에서 Queue 인터페이스를 구현한 대표적인 구현체의 특징은 다음과 같다
+- LinkedList : 노드끼리 서로 연결하여 리스트처럼 만든 컬렉션이다
+- PriorityQueue: 우선 순위를 가지는 Queue이다. compareTo() 메소드를 사용하기 때문에 Comparable 인터페이스를 구현한다.
+- ArrayDeque: 스택으로 사용할 때 Stack 클래스보다 빠르며, 대기열로 사용할때 LinkedList보다 빠르다
 
 ## LinkedList
 LinkedList는 List, Queue 인터페이스의 구현체로써 리스트, 큐의 역할을 둘 다 할 수 있다. 각 노드(객체)끼리의 주소를 서로 가르켜 이어지는 구조를 가진다. LinkedList의 종류는 단방향 연결 리스트(Single linked list), 양방향 연결 리스트(Double linked list), 원형 연결 리스트(Circular linked list)등이 있다.
