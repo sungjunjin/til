@@ -205,9 +205,9 @@ Hyundai
 
 #### Collection.unmodifiableList
 내부 멤버 변수에 리스트가 있는 경우 사용할 수 있는 방법이다. 리스트를 반환하는 getter 메소드를 작성할 때 
-`Collection.unmodifiableList`로 감싸서 반환하면 외부에서 리스트 내부 요소에 대한 수정을 방지할 수 있다. `Collection.unmodifiableList`로 리턴되는 리스트는 add, remove, set, addAll과 같은 컬렉션의 내부 요소를 수정하는 메소드를 호출했을 경우 UnsupportedOperationException 예외를 발생시킨다.
+`Collection.unmodifiableList`로 감싸서 반환하면 외부에서 리스트 내부 요소에 대한 수정을 방지할 수 있다. `Collection.unmodifiableList`로 리턴되는 리스트는 add, remove, set, addAll과 같은 리스트의 내부 요소를 수정하는 메소드를 호출했을 경우 UnsupportedOperationException 예외를 발생시킨다.
 
-예를 들어 멤버 변수에 Owner 목록을 가지는 자동차 클래스가 있다. 컬렉션 타입의 owners 멤버 변수를 반환하는 getter는 Collection.unmodifiableList로 감싸서 반환된다.
+예를 들어 멤버 변수에 Owner 목록을 가지는 자동차 클래스가 있다. 리스트 타입의 owners 멤버 변수를 반환하는 getter는 Collection.unmodifiableList로 감싸서 반환된다.
 ```java
 public class Car {
     private final List<Owner> owners;
