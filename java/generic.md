@@ -183,72 +183,48 @@ class java.lang.Integer
 위 예시처럼 클래스 타입 파라미어와 메소드 타입 파라미터는 별도로 동작하는 모습을 확인할 수 있다.
 
 ## 제네릭 타입 범위 한정하기
-제네릭 클래스나 메소드에 전달되는 타입 파라미터의 범위를 한정할 수 있다. 예를들어 Car 클래스를 상속받은 Bus 클래스가 있다고 가정해보자.
-
-```java
-public class Car {
-    protected String name;
-
-    public Car(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Car name = " + this.name;
-    }
-}
-
-```
-
-```java
-public class Bus extends Car{
-    public Bus(String name) {
-        super(name);
-    }
-
-    @Override
-    public String toString() {
-        return "Bus name = " + this.name;
-    }
-}
-```
-
  제네릭 클래스의 <> 안에 extends 키워드를 사용하여 타입 파라미터를 해당 클래스와 하위 타입의 클래스 타입으로 제한할 수 있다. 이를 제한된 타입 매개변수 (Bounded Type Parameter)라고 한다.
- ```java
- public class GenericDto<T extends Car> {
-    private T object;
 
-    public T getObject() {
-        return this.object;
+```java
+public class Calculator<T extends Number> {
+    public T add(T a, T b) {
+        // 내부 구현 생략
     }
-
-    public void setObject(T object) {
-        this.object = object;
+    public T minus(T a, T b) {
+        // 내부 구현 생략
+    }
+    public T multiply(T a, T b) {
+        // 내부 구현 생략
+    }
+    public T divide(T a, T b) {
+        // 내부 구현 생략
     }
 }
 ```
+위 처럼 사칙연산의 기능을 하는 Caculator 제네릭 클래스를 만들었을때, 타입 파라미터를 Number클래스를 상속받은 클래스만 허용할 수 있다.
 
 메인 메소드에서 String 타입 파라미터를 전달해 위 제네릭 클래스의 객체를 생성하려고 하면 다음과 같은 컴파일러 에러가 발생한다.
 ```java
-public static void main(String[] args) {
-    // 가능
-    GenericDto<Car> carGenericDto = new GenericDto<>();
-    GenericDto<Bus> busGenericDto = new GenericDto<>();
+    public static void main(String[] args) {
+        // 가능
+        Calculator<Integer> intCal = new Calculator<>();
+        Calculator<Double> doubleCal = new Calculator<>();
 
-    // 불가능
-    GenericDto<String> stringGenericDto = new GenericDto<>();
-}
+        // 불가능
+        Calculator<String> strCal = new Calculator<>();
+    }
 ```
 
 실행 결과
 ```
 error: type argument String is not within bounds of type-variable T
-        GenericDto<String> stringGenericDto = new GenericDto<String>();
+        Calculator<String> strCal = new Calculator<>();
 ```
 
 ## 제네릭의 형변환과 와일드카드
-제네릭은 타입 매개변수로 구체화된 내부 요소들간의 형변환 문제를 일으키지 않기 위해 하위 타입간의 형변환을 금지하고 있다. 
+
+### 형변환
+배열과는 다르게 제네릭은 타입 매개변수로 구체화된 내부 요소들간의 형변환 문제를 일으키지 않기 위해 상속관계의 타입간 형변환을 금지하고 있다. 
 
 ```java
 public static void main(String[] args) {
@@ -260,15 +236,29 @@ public static void main(String[] args) {
     }
 
     // 불가능
-    List<Objects> objectsList = new ArrayList<String>();
+    ArrayList<Objects> objectsList = new ArrayList<String>();
 
     for(Object e: objectsList) {
         System.out.println(e);
     }
 }
 ```
+위 예시를 객체지향의 다형성에 의해 보면 Object 배열에 String 배열은 충분히 들어갈 수 있다. 
 
-제네릭간의 형변환이 가능하게 하려면 와일드카드 문법을 사용해야 한다. 와일드 카드 타입이란 어떤 타입이 제네릭 타입이 되더라고 상관 없다는 의미를 가지고 있다. <>안에 ?을 적어주면 와일드 카드 타입을 타입 매개변수로 사용한다는 뜻이다.
+### 공변성
+공변성은 상속 관계의 클래스들 중에서 서로 형변환이 가능한 성질을 나타낸다. 예를들어 부모클래스 A와 자식 클래스 B가 있을 때, 공변, 불공변, 무공변 / 불공변이 될 수 있는 성질은 다음과 같다. 제네릭은 무(불)공변에 해당한다
+- `B[]`가 `A[]`의 **하위** 타입이고, `List<B>`가 `List<A>` **하위** 타입이면 -> 공변
+- `B[]`가 `A[]`의 **상위** 타입이고, `List<B>`가 `List<A>` **상위** 타입이면 -> 반공변
+- `List<A>`와 `List<B>`가 서로 관계가 없을 때 -> 무공변 / 불공변
+
+
+### 와일드카드
+따라서 제네릭간의 형변환이 가능하려면 와일드카드 문법을 사용해야 한다. 와일드 카드 타입이란 어떤 타입이 제네릭 타입이 되더라고 상관 없다는 의미를 가지고 있다.
+
+```java
+List<? extends Object> list = new ArrayList<String>(); // Object 클래스나 Object 클래스의 하위 타입만 가능
+List<? super String> list2 = new ArrayList<Object>(); // String 클래스나 String 클래스의 상위 타입만 가능
+```
 
 ```java
 public static void main(String[] args) {
@@ -282,38 +272,20 @@ public static void main(String[] args) {
 ```
 
 와일드카드 타입 또한 extends, super 키워드를 사용해 와일드카드 타입의 매개변수형을 제한할 수 있다.
+- `<?>` : 제한 없음
+- `<? extends 타입>` : 해당 타입이나 **하위** 타입만 가능 -> 상위 클레스 제한
+- `<? super 타입>` : 해당 타입이나 **상위** 타입만 가능 -> 하위 클레스 제한
 
-- ? extends 타입 : 해당 타입이나 **하위** 타입만 가능
-- ? super 타입 : 해당 타입이나 **상위** 타입만 가능
-
+####와일드카드에 대한 오해
 ```java
-List<? extends Object> list = new ArrayList<String>(); // Object 클래스나 Object 클래스의 하위 타입만 가능
-List<? super String> list2 = new ArrayList<Object>(); // String 클래스나 String 클래스의 상위 타입만 가능
-```
-
-## 제네릭의 제한사항
-
-제네릭 타입의 객체는 생성이 불가능하다.
-```java
-public <T> void makeClass() {
-    T t = new T(); // 불가능
+public class MyGeneric<?> {
+    // 불가능
 }
 ```
-
-static 멤버에 제네릭 타입이 올 수 없다. 객체를 생성하기도 전에 static 멤버의 타입을 확정할수는 없기 때문이다.
+제네릭의 와일드카드 문법은 클래스 설계에 사용할 수 없다. 
 ```java
-public class Car {
-    public static T staticGeneric; // 불가능
-
-    protected String name;
-
-    public Car(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Car name = " + this.name;
-    }
+public static void main(String[] args) {
+    MyGeneric<? extends Number> myGeneric = new MyGeneric<>(); // 가능
 }
-``` 
+```
+와일드카드 문법은 이미 만들어진 제네릭 클래스나 메소드를 사용할때 이용한다.
