@@ -221,6 +221,9 @@ error: type argument String is not within bounds of type-variable T
         Calculator<String> strCal = new Calculator<>();
 ```
 
+### <T super 타입>이 없는 이유
+제네릭은 `<T extends 타입>`과 같은 상한 경계 타입 파라미터를 허용하지만 반대로 `<T super 타입>` 처럼 하한 경계에 의한 타입 범위를 제한할 수 없다. 이유는 허용을 하게되면 결국에는 Object 클래스까지 허용 범위가 올라가게 되면서 `<T extens Object>`와 같은 쓸모없는 코드가 되어버리기 때문이다.
+
 ## 제네릭의 형변환과 와일드카드
 
 ### 형변환
@@ -289,3 +292,132 @@ public static void main(String[] args) {
 }
 ```
 와일드카드 문법은 이미 만들어진 제네릭 클래스나 메소드를 사용할때 이용한다.
+
+### 타입 소거
+제네릭 타입은 컴파일이 완료된 후 없어진다. 이는 제네릭 문법이 도입되기 전에 존재하던 자바 버전의 코드를 호환하기 위함이다. 컴파일러는 클래스나 메소드에 제네릭 타입 소거를 적용하고 필요하면 자동 형변환과 Bridge Method를 추가한다.
+
+#### 타입 소거
+제네릭 클래스로 예시를 들어보자.
+
+- 타입 파라미터 `<T>`는 Object로 치환된다
+
+    소거 전
+    ```java
+    public class MyGeneric<T> {
+        T object;
+
+        public T getObject() {
+            return object;
+        }
+
+        public void setObject(T object) {
+            this.object = object;
+        }
+    }
+    ```
+
+    소거 후
+    ```java
+    public class MyGeneric {
+        Object object;
+
+        public Object getObject() {
+            return object;
+        }
+
+        public void setObject(Object object) {
+            this.object = object;
+        }
+    }
+    ```
+
+- Bounded 타입 파라미터의 `<T extends Class>`는 Class로 치환된다
+
+    소거 전
+    ```java
+    public class MyGeneric<T extends Class> {
+        T object;
+
+        public T getObject() {
+            return object;
+        }
+
+        public void setObject(T object) {
+            this.object = object;
+        }
+    }
+    ```
+
+    소거 후
+    ```java
+    public class MyGeneric {
+        Class object;
+
+        public Class getObject() {
+            return object;
+        }
+
+        public void setObject(Class object) {
+            this.object = object;
+        }
+    }
+    ```
+
+#### 자동 형변환
+제네릭 타입을 소거한 후 타입이 일치하지 않는 부분은 컴파일러가 자동적으로 형변환을 추가한다.
+
+#### Bridge Method 생성
+제네릭 타입을 확장한 클래스에 대해서 타입에 대한 다형성을 유지하기 위해 컴파일러는 Bridge Method를 생성한다.
+```java
+public class MyGeneric<T> {
+    T object;
+
+    public T getObject() {
+        return object;
+    }
+
+    public void setObject(T object) {
+        this.object = object;
+    }
+}
+```
+
+```java
+public class StringGeneric extends MyGeneric<String> {
+    @Override
+    public void setObject(String str) {
+        this.object = str;
+    }
+}
+```
+
+타입 소거가 일어나면 MyGeneric 클래스 내부의 타입 파라미터 T는 전부 Object 클래스로 치환된다.
+```java
+public class MyGeneric {
+    Object object;
+
+    public Object getObject() {
+        return object;
+    }
+
+    public void setObject(Object object) {
+        this.object = object;
+    }
+}
+```
+
+이렇게 되면 자식 클래스가 사전에 Override한 setObject 메소드의 시그니처가 부모 클래스의 sebObject 메소드와 불일치하게 된다. 따라서 이런 간극을 없애기 위해 컴파일러는 자식 클래스에 bridge method를 생성한다.
+
+```java
+public class StringGeneric extends MyGeneric<String> {
+
+    public void setObject(String str) {
+        this.object = str;
+    }
+
+    // bridge method 생성
+    public void setObject(Object str) {
+        this.setObject((String) str);
+    }
+}
+```
