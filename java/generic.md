@@ -1,6 +1,5 @@
 # Generic
-
-제네릭은 클래스, 인터페이스나 메소드를 사용할 때 내부 데이터에 대한 타입을 외부(사용하는 입장)에서 지정하는 방법이다. 제네릭을 활용하면 실행 환경에서 타입과 관련된 실수를 방지할 수 있다. 
+제네릭은 클래스, 인터페이스나 메소드를 사용할 때 내부 데이터에 대한 타입을 외부(사용하는 입장)에서 지정하는 방법이다. 제네릭을 활용하면 컴파일러가 외부에서 지정한 타입에 대한 검사를 할 수 있다. 
 
 ## 제네릭을 사용하기 전
 아래와 같이 CastingDto 클래스는 Object 타입의 멤버 변수를 getter / setter와 함께 가지고 있다. 
@@ -72,7 +71,7 @@ String 타입으로 GenericDto를 선언하면 타입 파라미터로 String 타
 GenericDto<String> stringGenericDto = new GenericDto<>();
 ```
 
-다음과 같이 GenericDto 클래스 내부에 타입이 구체화된다.
+다음과 같이 GenericDto 클래스 내부에 타입이 구체화된다. 전파된 타입을 기반으로 컴파일 단계에서 타입 체크를 한다.
 ```java
 public class CastingGenericDto<String> {
     private String object;
@@ -409,7 +408,7 @@ public class MyGeneric {
 이렇게 되면 자식 클래스가 사전에 Override한 setObject 메소드의 시그니처가 부모 클래스의 sebObject 메소드와 불일치하게 된다. 따라서 이런 간극을 없애기 위해 컴파일러는 자식 클래스에 bridge method를 생성한다.
 
 ```java
-public class StringGeneric extends MyGeneric<String> {
+public class StringGeneric extends MyGeneric {
 
     public void setObject(String str) {
         this.object = str;
