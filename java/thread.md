@@ -255,7 +255,7 @@ public class Calc {
 ```
 메소드를 synchronized로 선언하면 현재 메소드를 점유하고 있는 쓰레드를 제외한 나머지 쓰레드는 대기상태가 된다.
 
-### synchronized block
+### synchronized block with 모니터 객체
 ```java
 public class Calc {
     private int amount;
@@ -286,7 +286,11 @@ public class Calc {
 }
 
 ```
-메소드의 일부만 synchronized 블록을 사용할 수 있다. Synchronized 블록을 사용할때는 하나의 잠금 객체를 사용하여 블록 내의 코드를 하나의 쓰레드만 점유하도록 할 수 있다. synchronized 괄호안에 넣는 객체가 잠금 대상이 된다. this 키워드를 사용할 수 있고 별도의 잠금 객체를 생성해 사용할 수 있다. 일반적으로는 두번째 예시처럼 별도의 잠금 객체를 만들어 사용한다.
+메소드의 일부만 synchronized 블록을 사용할 수 있다. 
+
+Synchronized 블록을 사용할때는 synchronized 괄호안에 객체를 사용하여 블록 내의 코드를 하나의 쓰레드만 점유하도록 할 수 있다. 이 객체를 모니터 객체 (monitor object)라고 한다. this를 사용할 수 있고 별도의 모니터 객체를 생성해 사용할 수 있다. 일반적으로는 두번째 예시처럼 별도의 모니터 객체를 만들어 사용한다. 
+
+모니터 객체는 여러 쓰레드가 동시에 객체로 접근하는 것을 막는 역할을 함과 동시에 Object에 제공하는 thread 관련 메소드를 synchronized 블록 내부에서 사용해 점유한 쓰레드에 대한 통제권을 가질 수 있다.
 
 ```java
 public class Calc {
@@ -310,7 +314,7 @@ public class Calc {
 }
 ```
 
-잠금 객체는 여러개를 만들어 각각의 synchronized 블록에 사용할 수 있다. 여러 개의 synchronized 블록에 같은 객체를 사용하면 두 블록 모두 하나의 쓰레드에서만 접근 가능하게된다. 그러므로 각각의 블록에 별도의 객체를 사용하면 각 블록 당 하나씩 쓰레드가 접근할 수 있게 된다.
+모니터 객체는 여러개를 만들어 각각의 synchronized 블록에 사용할 수 있다. 여러 개의 synchronized 블록에 같은 모니터 객체를 사용하면 두 블록 모두 하나의 쓰레드에서만 접근 가능하게된다. 그러므로 각각의 블록에 별도의 모니터 객체를 사용하면 각 블록 당 하나씩 쓰레드가 접근할 수 있게 된다.
 
 ### Thread의 객체 참조
 Synchronized 키워드가 붙은 메소드는 쓰레드별로 같은 객체를 참조했을때만 유효하다. 아래와 같이 같은 calc 객체를 참조하고 있는 thread1, thread2는 synchronized 키워드 효과를 내지만, 별도의 calc1을 참조하고 있는 thread3 객체는 다른 두 쓰레드에 대해서 synchronized 키워드의 효과가 적용되지 않는다.
@@ -376,3 +380,47 @@ ThreadGroup이란 서로 관련된 쓰레드를 그룹으로 묶어서 다루기
 | ThreadGroup getParent() | 부모 쓰레드 그룹을 리턴한다. |
 | void list() | 쓰레드 그룹의 상세 정보를 출력한다. |
 | void setDaemon(boolean daemon) | 지금 쓰레드 그룹에 속한 쓰레드들을 데몬으로 지정한다. |
+
+## Thread Local
+자바에서 제공하는 ThreadLocal 클래스는 쓰레드 내부에서 사용할 수 있는 고유한 변수다. 해당 변수는 쓰레드 내부에서 공유되며 다른 쓰레드에서 참조할 수 없다.
+
+ThreadLocal은 쓰레드마다 고유한 ThreadLocalMap 객체를 생성해 변수를 저장하고 조회한다.
+```java
+public void set(T value) {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null) {
+        map.set(this, value);
+    } else {
+        createMap(t, value);
+    }
+}
+
+public T get() {
+    Thread t = Thread.currentThread();
+    ThreadLocalMap map = getMap(t);
+    if (map != null) {
+        ThreadLocalMap.Entry e = map.getEntry(this);
+        if (e != null) {
+            @SuppressWarnings("unchecked")
+            T result = (T)e.value;
+            return result;
+        }
+    }
+    return setInitialValue();
+}
+```
+사용법은 다음과 같다
+
+ThreadLocal에 값 저장하기
+```java
+ThreadLocal<String> threadLocal = new ThreadLocal<>();
+threadLocal.set("INFO");
+```
+
+ThreadLocal에서 값 가져오기
+```java
+String str = threadLocal.get();
+```
+
+ThreadLocal에서 주의할 점은 변수 사용이 완료되었으면 꼭 remove() 메소드를 호출해 변수를 삭제해야 한다. WAS와 같이 쓰레드풀을 사용하는 경우 사용이 완료된 쓰레드에 ThreadLocal 변수가 남아있을 여지가 있기 때문이다.
