@@ -161,7 +161,7 @@ private Object[] grow(int minCapacity) {
 oldCapacity에 내부 배열의 길이를 할당한다. 길이가 빈 배열(DEFAULTCAPACITY_EMPTY_ELEMENTDATA)이 아니거나 0보다 클 경우 ArraySupport.newLength 메소드를 호출해 확장할 새로운 배열의 길이를 계산한다. 해당 메소드의 매개변수의 값들은 다음과 같다
 
 - 기존 배열의 길이
-- (추가할 데이터의 개수) - (기존 내부 배열의 길이) = 추가할 데이터의 개수
+- (기존 배열의 데이터 수 + 추가할 데이터의 개수) - (기존 내부 배열의 길이) = 최소 필요한 용량
 - 기존 배열의 길이 / 2
 
 기존 내부 배열이 빈 배열일 경우 기본 용량(10)과 추가하고자 하는 데이터의 개수의 최대값의 크기로 확장될 배열의 크기가 정해진다.
@@ -183,8 +183,8 @@ public static int newLength(int oldLength, int minGrowth, int prefGrowth) {
 }
 ```
 newLength 메소드의 매개변수로 넘어온 인자를 정리하자면 최종적으로 확장될 배열의 길이는 추가할 데이터의 개수에 따라 다르다.
-- 추가할 데이터의 개수에 기존 배열의 길이 / 2보다 크면 : 기존 배열의 길이 + 추가할 데이터의 개수
-- 추가할 데이터의 개수에 기존 배열의 길이 / 2보다 작으면 : 기존 배열의 길이 + 기존 배열의 길이 / 2
+- 최소 필요한 용량이 기존 배열의 길이 / 2보다 크면 : 기존 배열의 길이 +  최소 필요한 용량
+- 최소 필요한 용량이 기존 배열의 길이 / 2보다 작으면 : 기존 배열의 길이 + 기존 배열의 길이 / 2
 
 ### hugeLength
 기존 배열을 확장할때 확장할 배열의 크기가 SOFT_MAX_ARRAY_LENGTH 보다 크거나 음수이면 내부 hugeLength 메소드가 호출된다.
@@ -207,4 +207,4 @@ private static int hugeLength(int oldLength, int minGrowth) {
     }
 }
 ```
-(기존 배열의 길이 + 추가할 데이터의 개수)가 int의 표현범위를 넘어가 오버플로우가 발생하게 되면 OutOfMemoryError 예외를 발생시킨다. 그 외에 경우에는 SOFT_MAX_ARRAY_LENGTH 혹은 확장될 배열의 크기를 반환한다.
+(기존 배열의 길이 + 최소 필요한 용량)가 int의 표현범위를 넘어가 오버플로우가 발생하게 되면 OutOfMemoryError 예외를 발생시킨다. 그 외에 경우에는 SOFT_MAX_ARRAY_LENGTH 혹은 확장될 배열의 크기를 반환한다.
