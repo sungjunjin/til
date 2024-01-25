@@ -105,7 +105,7 @@ private Object[] grow(int minCapacity) {
 }
 ```
 
-oldCapacity에 내부 배열의 길이를 할당한다. 길이가 빈 배열(DEFAULTCAPACITY_EMPTY_ELEMENTDATA)이 아니거나, 길이가 0보다 클 경우 ArraySupport.newLength 메소드를 호출해 확장할 새로운 배열의 길이를 계산한다. 해당 메소드의 매개변수의 값들은 다음과 같다
+oldCapacity에 내부 배열의 길이를 할당한다. 길이가 빈 배열(DEFAULTCAPACITY_EMPTY_ELEMENTDATA)이 아니거나, 현재 내부 배열의 길이가 0보다 클 경우 ArraySupport.newLength 메소드를 호출해 확장할 새로운 배열의 길이를 계산한다. 해당 메소드의 매개변수의 값들은 다음과 같다
 - 기존 배열의 길이
 - (현재 데이터 개수 + 1) - (기존 배열의 길이) = 1
 - 기존 배열의 길이 / 2 
@@ -207,4 +207,4 @@ private static int hugeLength(int oldLength, int minGrowth) {
     }
 }
 ```
-확장할 배열의 크기가 int의 표현범위를 넘어가 오버플로우가 발생하게 되면 OutOfMemoryError 예외를 발생시킨다. 그 외에 경우에는 SOFT_MAX_ARRAY_LENGTH 혹은 확장될 배열의 크기를 반환한다.
+(기존 배열의 길이 + 추가할 데이터의 개수)가 int의 표현범위를 넘어가 오버플로우가 발생하게 되면 OutOfMemoryError 예외를 발생시킨다. 그 외에 경우에는 SOFT_MAX_ARRAY_LENGTH 혹은 확장될 배열의 크기를 반환한다.
