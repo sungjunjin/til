@@ -9,8 +9,11 @@
 ```java
 public abstract class MemberManagerAbstract {
     public abstract boolean addMember(MemberDto memberDto);
+    
     public abstract boolean removeMember(String name, String phone);
+
     public abstract boolean updateMember(MemberDto memberDto);
+
     public void printLog(String data) {
         System.out.println("Data=" + data);
     }
