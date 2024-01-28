@@ -165,9 +165,7 @@ public static void main(String[] args) {
 - NORM_PRIORITY: 일반적인 우선 순위이며 값은 5다
 - MIN_PRIORITY: 가장 낮은 우선 순위이며 값은 1이다
 
-## Synchronized
-
-### 여러개의 쓰레드가 공유된 자원에 접근했을때 발생하는 문제
+## 여러개의 쓰레드가 공유된 자원에 접근했을때 발생하는 문제
 여러 개의 쓰레드가 공유된 자원에 접근하면 의도하지 않는 데이터가 발생하는 등의 문제가 생길 수 있다. 아래 예시를 확인해보자
 ```java
 public class Calc {
@@ -233,7 +231,8 @@ public static void main(String[] args) {
 
 실행 결과는 예측했던 20000의 값에 많이 벗어나는것을 확인할 수 있다. 심지어 메인 메소드를 실행할때마다 결과값은 다르다. 각각의 쓰레드가 calc 객체의 amount을 동시에 읽어들여서 Thread Unsafety가 발생하는 문제이다. 
 
-Thread Safe 하다는 것은 여러 쓰레드가 공유된 자원에 접근했을 때 아무런 문제가 없는 상황을 뜻한다. 자바에서 어떤 메소드가 Thread Safe하려면 synchronized 키워드를 사용할 수 있다.
+## Synchronized
+Thread Safe 하다는 것은 여러 쓰레드가 공유된 자원에 접근했을 때 아무런 문제가 없는 상황을 뜻한다. 자바는 멀티쓰레드 환경에서 동기화를 지원하기 위해 가장 기초적인 장치인 Intrinsic Lock을 사용한다. Synchronized 키워드를 사용해 특정 객체의 고유락을 통해 여러 쓰레드들을 동기화 할 수 있다.
 
 synchronized 키워드는 두 가지 방법으로 사용할 수 있다
 
@@ -341,7 +340,7 @@ public static void main(String[] args) {
 | void join(long millis, int nanos) | 첫 번째 매개변수로 넘어온 시간(1/1,000초) + 두 번째 매개변수로 넘어온 시간(1/1,000,000,000초)만큼 대기한다. |
 | void interrupt() | InterruptedException을 발생시키면서 수행중인 쓰레드에 중지 요청을 한다. |
 
-이 중에서도 getState()를 통해 쓰레드의 현재 상태를 가져올 수 있다. 쓰레드의 현재 상태는 다음과 같이 상수로 정의되어 있다.
+이 중에서도 getState()를 통해 쓰레드의 현재 상태를 가져올 수 있다. 쓰레드의 현재 상태는 다음과 같이 상수로 정의되어 있다. 
 
 | 상태 | 의미 |
 | --- | --- |
@@ -352,8 +351,8 @@ public static void main(String[] args) {
 | TIMED_WAITING | 특정 시간만큼 쓰레드가 대기 중인 상태 |
 | TERMINATED | 쓰레드가 종료된 상태 |
 
- 위 상태를 기반으로 쓰레드의 라이프 싸이클은 NEW -> RUNNABLE, BLOCKED, WAITING, TIMED_WAITING -> TERMINATED의 형태를 가진다.
  ![heap](./img/thread_life_cycle.png)
+ 위 상태를 기반으로 쓰레드의 라이프 싸이클은 NEW -> RUNNABLE, BLOCKED, WAITING, TIMED_WAITING -> TERMINATED의 형태를 가진다.
 
 ## Object 클래스에 구현된 쓰레드와 관련있는 메소드들
 Object 클래스에서는 객체를 처리하는 메소드 이외에 쓰레드를 처리하는 메소드들이 있다. 다음은 Object 클래스에서 쓰레드를 처리하기 위한 메소드들의 목록이다.
