@@ -180,7 +180,7 @@ InputStream 클래스의 선언문은 다음과 같다.
 public abstract class InputStream implements Closeable
 ```
 
-여기서 Closeable 인터페이스는 자바에서 어떤 자원(파일, 네트워크 연결)등을 사용한 후에 안전하게 닫을 수 있는 메소드인 close 메소드를 가지고 있다. 해당 인터페이스를 구현하면 리소스의 사용이 끝난 후 close 메소드로 반드시 닫아줘야 한다.
+여기서 Closeable 인터페이스는 자바에서 어떤 자원(파일, 네트워크 연결)등을 사용한 후에 안전하게 닫을 수 있는 메소드인 close 메소드를 가지고 있다. 해당 인터페이스를 구현하면 리소스의 사용이 끝난 후 close 메소드로 반드시 닫아줘야 프로그램이 메모리 리소스를 오랫동안 점유하는 리소스 누수 현상이 발생하지 않는다.
 
 InputStream을 상속한 클래스는 매우 많지만 자주 사용하는 스트림은 다음과 같다.
 | 클래스 | 설명 |
@@ -357,7 +357,7 @@ public class ReaderTest {
 ### try-catch-finally
 
 #### 리소스 담당 변수 선언 위치
-FileReader, BufferedReader, FileWriter, BufferedWriter 객체들은 입출력 리소스를 사용하기 때문에 finally 블록에서 반드시 close 메소드를 호출해 자원을 해제해야 한다. Try 블록 내부에서 해당 변수들을 선언할 경우 try 블록의 스코프에서만 유효한 지역 변수가 되기 때문에 finally 블록에서 접근하려면 try 블록 외부에 변수를 선언해햐 한다.
+FileReader, BufferedReader, FileWriter, BufferedWriter 객체들은 입출력 리소스를 사용하기 때문에 finally 블록에서 반드시 close 메소드를 호출해 자원을 해제하지 않으면 리소스 누수가 발생한다. Try 블록 내부에서 해당 변수들을 선언할 경우 try 블록의 스코프에서만 유효한 지역 변수가 되기 때문에 finally 블록에서 접근하려면 try 블록 외부에 변수를 선언해햐 한다.
 
 #### close 호출 순서
 finally 블록 내부에서 close 메소드를 호출할 객체의 순서는 가장 마지막에 open 한 객체부터 닫아줘야 정상적인 처리가 가능하다. 예를들어 FileWriter -> BufferedWriter 순으로 객체를 생성했다면 BufferedWriter -> FileWriter 순으로 객체를 close 해줘야 한다.
