@@ -106,6 +106,7 @@ C의 free 함수와 같이, 자바에서는 프로그래머가 명시적으로 �
 
 
 일반적으로 JVM 힙 영역의 구조는 다음과 같다.
+
 ![heap](./img/heap.png)
 
 **1. Young(New) 영역**
@@ -128,6 +129,7 @@ Major GC(Full GC)가 실행되면 GC와 연관있는 쓰레드 외에 다른 쓰
 **CMS(Concurrent Mark Sweep) GC** : 어플리케이션 쓰레드가 GC 쓰레드가 동시에 실행된다. 이 때부터 Mark And Sweep이 병렬로 진행된다. 복잡해진 GC 과정이 수행된 만큼 CPU 사용량이 높고 결정적으로 Sweep 단계에서 메모리 Compaction 과정을 수행하지 않아 Java 14에서 deprecated 처리 되었다.
 
 **G1 (Garbage First) GC** : 기존의 리니어한 Young, Old 영역을 사용하지 않고 힙 영역을 Region 이라는 동적인 영역으로 나누어 사용한다. Eden, Survivor, Old 영역을 고정이 아닌 동적으로 부여한다. Java 9 이후로 default GC이다.
+
 <img src="./img/g1.png" width="500" height="300"/>         
 
 ## Hotspot JVM
