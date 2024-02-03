@@ -18,6 +18,7 @@ NIO는 기존 I/O의 스트림을 사용하지 않고 채널(Channel)과 버퍼(
 
 ### Channel
 ![nio_channel_selector](./img/nio_channel_selector.png)
+
 Channel은 데이터의 입출력을 담당하는 객체이다. 기존 I/O의 스트림과 달리 양방향으로 입출력이 가능하다. NIO의 Selector와 함께 사용되는데 Selector란 여러개의 채널들을 관리하는 싱글 쓰레드 컴포넌트이다. Selector는 입출력 준비가 완료된 채널만 선택해서 작업 쓰레드를 선택하기 때문에 Channel과 Selector를 통해 논블록킹 I/O를 구현할 수 있다.
 
 ### Buffer
