@@ -208,3 +208,99 @@ private static int hugeLength(int oldLength, int minGrowth) {
 }
 ```
 (기존 배열의 길이 + 최소 필요한 용량)가 int의 표현범위를 넘어가 오버플로우가 발생하게 되면 OutOfMemoryError 예외를 발생시킨다. 그 외에 경우에는 SOFT_MAX_ARRAY_LENGTH 혹은 확장될 배열의 크기를 반환한다.
+
+## add() 메소드의 JDK 6,7,8 비교
+ArrayList의 add() 메소드에서 배열을 확장하는 방식은 JDK 6,7,8별로 각각 다르다. 하나씩 비교해보자.
+
+### JDK 6
+```java
+public boolean add(E e) {
+    ensureCapacity(size + 1);  // Increments modCount!!
+    elementData[size++] = e;
+    return true;
+}
+```
+
+```java
+public void ensureCapacity(int minCapacity) {
+    modCount++;
+    int oldCapacity = elementData.length;
+    if (minCapacity > oldCapacity) {
+        Object oldData[] = elementData;
+        int newCapacity = (oldCapacity * 3)/2 + 1;
+        if (newCapacity < minCapacity)
+            newCapacity = minCapacity;
+        // minCapacity is usually close to size, so this is a win:
+        elementData = Arrays.copyOf(elementData, newCapacity);
+    }
+}
+```
+
+JDK6 버전에서는 배열을 확장하기 위해 ensureCapacity라는 이름의 메소드를 사용한다. 매개변수 minCapacity에는 `기존 배열의 데이터 수 + 1`이 들어간다.
+
+minCapacity가 기존 배열의 길이보다 크면 확장될 배열의 크기가 다음과 같은 계산식으로 결정된다.
+
+```
+확장될 배열의 크기 = (기존 배열의 길이 * 3) / 2 + 1
+```
+확장될 배열의 크기는 기존 배열의 크기에서 대략 1.5배 만큼의 길이로 정해진다.
+
+
+만약 확장될 배열의 크기가 minCapacity보다 작으면 minCapacity로 크기가 정해진다.
+
+
+### JDK 7
+```java
+public boolean add(E e) {
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    elementData[size++] = e;
+    return true;
+}
+```
+
+```java
+private void ensureCapacityInternal(int minCapacity) {
+    modCount++;
+    // overflow-conscious code
+    if (minCapacity - elementData.length > 0)
+        grow(minCapacity);
+}
+```
+
+```java
+private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity >> 1);
+    if (newCapacity - minCapacity < 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE > 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+```
+
+JDK7 버전부터는 ensureCapacityInternal 메소드 내부에서 grow 메소드를 호출한다. 마찬가지로 매개변수 minCapacity에는 `기존 배열의 데이터 수 +1`이 들어간다.
+
+확장될 배열의 크기는 다음과 같은 계산식으로 결정된다.
+
+```
+확장될 배열의 크기 = 기존 배열의 길이 + (기존 배열의 길이 / 2)
+```
+
+JDK 6과 동일하게 확장될 배열의 크기는 기존 배열의 크기에서 대략 1.5배 만큼의 크기로 정해진다. 하지만 1.5배를 구하는 계산식이 기존 곱셈 나눗셈 덧셈 연산에서 비트 연산과 덧셈으로 바뀌었다는 점에서 차이가 있다.
+
+```java
+// JDK 6
+int newCapacity = (oldCapacity * 3)/2 + 1; 
+
+// JDK 7
+int newCapacity = oldCapacity + (oldCapacity >> 1); 
+```
+컴퓨터안에 계산은 ALU (Arithmetic Logic Unit)에 의해 실행되고 모든 연산은 덧셈에 기반해 동작한다.
+- 뺄셈 : 2의 보수를 구하여 더한다
+- 곱셈 : 덧셈을 반복하여 처리해 곱셈의 효과를 낸다
+- 나눗셈: 뺄셈 (2의 보수 덧셈)을 반복하여 나눗셈의 효과를 낸다
+
+
