@@ -281,6 +281,7 @@ private void grow(int minCapacity) {
 }
 ```
 
+#### JDK 6과 달라진 점
 JDK7 버전부터는 ensureCapacityInternal 메소드 내부에서 grow 메소드를 호출한다. 마찬가지로 매개변수 minCapacity에는 `기존 배열의 데이터 수 +1`이 들어간다.
 
 확장될 배열의 크기는 다음과 같은 계산식으로 결정된다.
@@ -298,9 +299,97 @@ int newCapacity = (oldCapacity * 3)/2 + 1;
 // JDK 7
 int newCapacity = oldCapacity + (oldCapacity >> 1); 
 ```
-컴퓨터안에 계산은 ALU (Arithmetic Logic Unit)에 의해 실행되고 모든 연산은 덧셈에 기반해 동작한다.
+컴퓨터안에 계산은 ALU (Arithmetic Logic Unit)에 의해 실행되고 모든 연산은 **덧셈**에 기반해 동작한다.
 - 뺄셈 : 2의 보수를 구하여 더한다
 - 곱셈 : 덧셈을 반복하여 처리해 곱셈의 효과를 낸다
-- 나눗셈: 뺄셈 (2의 보수 덧셈)을 반복하여 나눗셈의 효과를 낸다
+- 나눗셈: 뺄셈(2의 보수 덧셈)을 반복하여 나눗셈의 효과를 낸다. 2의 보수를 구하는 연산이 반복된다는 점에서 나눗셈은 상대적으로 매우 느린 산술연산이다.
+
+JDK 6에서 곱셈과 나눗셈 연산을 하기 위해 덧셈과 뺄셈을 반복하는 작업을 JD7에서는 쉬프트 연산을 하는 방식으로 최적화해서 성능을 개선시켰다.  
+
+```java
+private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
+
+// 일부 코드 생략
+
+private static int hugeCapacity(int minCapacity) {
+    if (minCapacity < 0) // overflow
+        throw new OutOfMemoryError();
+    return (minCapacity > MAX_ARRAY_SIZE) ?
+        Integer.MAX_VALUE :
+        MAX_ARRAY_SIZE;
+}
+```
+
+확장될 배열의 길이가 배열의 최대 길이(MAX_ARRAY_SIZE)보다 클 경우 hugeCapacity 메소드를 호출한다. 메소드 내부에는 오버플로우에 대비한 예외처리가 추가된 것을 확인할 수 있다.
+
+### JDK 8
+```java
+public boolean add(E e) {
+    ensureCapacityInternal(size + 1);  // Increments modCount!!
+    elementData[size++] = e;
+    return true;
+}
+```
+
+```java
+private void ensureCapacityInternal(int minCapacity) {
+    if (elementData == EMPTY_ELEMENTDATA) {
+        minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+    }
+
+    ensureExplicitCapacity(minCapacity);
+}
 
 
+private void ensureExplicitCapacity(int minCapacity) {
+    modCount++;
+
+    // overflow-conscious code
+    if (minCapacity - elementData.length > 0)
+        grow(minCapacity);
+}
+```
+
+```java
+private void grow(int minCapacity) {
+    // overflow-conscious code
+    int oldCapacity = elementData.length;
+    int newCapacity = oldCapacity + (oldCapacity >> 1);
+    if (newCapacity - minCapacity < 0)
+        newCapacity = minCapacity;
+    if (newCapacity - MAX_ARRAY_SIZE > 0)
+        newCapacity = hugeCapacity(minCapacity);
+    // minCapacity is usually close to size, so this is a win:
+    elementData = Arrays.copyOf(elementData, newCapacity);
+}
+
+private static int hugeCapacity(int minCapacity) {
+    if (minCapacity < 0) // overflow
+        throw new OutOfMemoryError();
+    return (minCapacity > MAX_ARRAY_SIZE) ?
+        Integer.MAX_VALUE :
+        MAX_ARRAY_SIZE;
+}
+```
+
+#### JDK 7과 달라진 점
+```java
+/// JDK 7
+public ArrayList() {
+    this(10);
+}
+
+// JDK 8
+public ArrayList() {
+    super();
+    this.elementData = EMPTY_ELEMENTDATA;
+}
+```
+JDK 7과 비교해서 배열을 확장하는 로직은 동일하지만 기본 생성자에서 초기 배열의 크기를 10으로 할당한 JDK 7과는 달리 JDK 8에서는 기본 생성자를 호출할 경우 빈 배열로 초기화한다. 이는 배열 메모리에 대한 지연 초기화를 통해 메모리 최적화를 하기 위해 수정한 것으로 보인다.
+
+```java
+if (elementData == EMPTY_ELEMENTDATA) {
+    minCapacity = Math.max(DEFAULT_CAPACITY, minCapacity);
+}
+```
+이 후 add 메소드가 호출되면 ensureCapacityInternal 메소드 내부에서 기존 배열이 빈 배열인 경우 기본 용량(DEFAULT_CAPACITY)값인 10과 minCapacity를 비교해 확장될 배열의 최소 용량을 정한다.
