@@ -198,7 +198,7 @@ public class DoubleCheckLockInit {
 - volatile 키워드가 변수에 필요하지만 volatile은 자바 1.5버전 이후에 등장하여 하위 버전과 호환이 되지 않는다.
 
 ### Bill Pugh Solution (LazyHolder) 
-클래스안에 정적 멤버 클래스(Holder)를 두어 싱글톤 객체를 생성하는 방법이다.
+클래스안에 정적 멤버 클래스(Holder)를 두어 싱글톤 객체를 생성하는 방법이다. 가장 일반적으로 사용하는 방식이다.
 ```java
 public class LazyHolder {
     private LazyHolder() {}
@@ -218,8 +218,29 @@ public class LazyHolder {
 -  외부 클래스의 getInstance 메소드를 호출할때 내부 클래스의 INSTANCE 변수가 참조되는 시점에 클래스가 로딩되어 싱글톤 객체의 lazy loading이 가능하다
 -  클래스 로딩은 단 한번만 일어난다는 특징을 활용해 싱글톤 객체를 보장한다
 
+### Enum
+```java
+public enum EnumSingleton {
+    INSTANCE;
+
+    public static EnumSingleton getInstance() {
+        return INSTANCE;
+    }
+}
+```
+
+#### 장점
+- 컴파일러에 의해서 한번 실행되는 enum 클래스 생성자의 특성을 이용해 싱글톤 패턴을 구현한 기법이다. 따라서 thread safe하다.
 #### 단점
-- 리플렉션에 의해 여러개의 객체가 생성될 수 있다
+- `java.lang.Enum` 클래스 외에 상속을 허용하지 않는다
+- 싱글톤 객체를 사용하지 않아도 메모리에 미리 생성되기 때문에 리소스의 낭비가 발생할 수 있다
+- Enum은 기본적으로 상수 집합을 정의하는데 사용되기 때문에, 예외 처리를 위한 try-catch 블록과 함게 사용될 수 없다. 
+
+
+## 클래스를 사용하는 싱글턴 패턴의 문제점
+위 enum 방식을 제외하고 클래스를 사용하는 방식으로 싱글턴 패턴을 구현했을때 아래와 같은 문제점이 발생할 수 있다.
+
+- 리플렉션에 의해 여러개의 객체가 생성될 수 있다.
     ```java
     public static void main(String[] args) {
         try {
@@ -281,20 +302,3 @@ public class LazyHolder {
             }
         }
         ```
-
-### Enum
-```java
-public enum EnumSingleton {
-    INSTANCE;
-
-    public static EnumSingleton getInstance() {
-        return INSTANCE;
-    }
-}
-```
-
-#### 장점
-- 컴파일러에 의해서 한번 실행되는 enum 클래스 생성자의 특성을 이용해 싱글톤 패턴을 구현한 기법이다. 따라서 thread safe하다.
-#### 단점
-- `java.lang.Enum` 클래스 외에 상속을 허용하지 않는다
-- 싱글톤 객체를 사용하지 않아도 메모리에 미리 생성되기 때문에 리소스의 낭비가 발생할 수 있다
