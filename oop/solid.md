@@ -185,7 +185,7 @@ public class Human {
 classDiagram
     Weapon <|--Sword
     Weapon <|--Gun
-    Weapon *-- Human
+    Weapon <.. Human
 
     class Weapon {
         +attack()*
