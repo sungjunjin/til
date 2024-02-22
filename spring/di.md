@@ -247,3 +247,11 @@ public class Car {
 | 패키지 | org.springframwork.beans.factory.annotation.Autowired | javax.annotation.Resource |
 | 빈 검색 방식 | byType 먼저, 못 찾으면 byName | byName 먼저, 못 찾으면 byType |
 | 주입되는 빈 강제하기 | @Qualifier 사용 | @Resource(name=””) 사용 |
+
+### 생성자 주입이 권장되는 이유
+생성자 주입을 활용하게 되면 다음과 같은 이점이 있다.
+
+- 불변성과 테스트 용이성: 생성자 주입은 의존성이 불변하다는 장점을 가진다. 따라서 빈 주입 방식중에 유일하게 final 키워드 적용이 가능하다.
+
+- 순환 의존성 방지: 생성자 주입을 사용하면 순환 의존성(circular dependency)을 방지할 수 있다. 순환 의존성은 빈이 서로를 의존하고 있는 경우 발생하는 문제로, 생성자 주입을 사용하면 스프링이 순환 의존성을 해결하는 데 컴파일 단계에서 도움을 준다.
+
