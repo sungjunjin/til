@@ -1,4 +1,4 @@
-# DI
+# DI (Dependency Injection)
 
 ## 의존성 (Dependency)
 클래스 A가 제대로 작동하려면 클래스 B가 필요한 경우, 클래스 A는 클래스 B에 의존한다. 이를 클래스 다이어그램으로 표현하면 다음과 같다.
