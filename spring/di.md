@@ -117,18 +117,6 @@ car.setTire(koreanTire); // 한국 브랜드 타이어 주입
 
 **설정파일**이나 **어노테이션**을 활용해 필요한 객체(의존성)를 스프링에 등록하여 사용하는데, 이렇게 스프링에 등록되어 스프링 컨테이너가 관리하는 객체(의존성)를 **빈(Bean)** 이라고 한다. 
 
-스프링 컨테이너에 객체를 빈으로 등록했을때의 장점은 다음과 같다
-- 필요한 의존성들을 (빈으로 등록된 객체에 한해서) 스프링 컨테이너가 알아서 주입해준다
-- 빈의 스코프를 지정할 수 있다
-    - Singleton : 어플리케이션에서 항상 한 개의 인스턴스를 사용한다 (기본값)
-    - Request : 요청마다 인스턴스를 생성한다
-    - Session : 세션마다 인스턴스를 생성한다
-    - Prototype : 항상 새로운 인스턴스를 만든다
-
-- 빈의 라이프사이클 인터페이스를 활용할 수 있다
-    - postConstruct()
-    - preDestroy()
-
 ### XML을 사용한 주입
 스프링 초기에 사용한 방식이다. 
 
@@ -187,30 +175,8 @@ public static void main(String[] args) {
 ### @Autowired & @Resource
 
 #### Autowired
-@Autowired 어노테이션은 스프링 프레임워크에서 제공하는 어노테이션이다. @Autowired 어노테이션은 필드, 생성자, setter 메소드에 사용해 의존성을 주입받을 수 있다.
+@Autowired 어노테이션은 스프링 프레임워크에서 제공하는 어노테이션이다. @Autowired 어노테이션은 필드, 생성자(스프링 4.3부터 생략 가능), setter 메소드에 사용해 의존성을 주입받을 수 있다.
 
-기존 xml 파일에 `<context:annotation-config/>` 태그의 추가와 각종 설정 파일을 추가한 빈 설정 파일은 다음과 같다.
-
-`resources/applicationContext.xml`
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-       http://www.springframework.org/schema/context
-       http://www.springframework.org/schema/context/spring-context-3.1.xsd"
->
-
-    <context:annotation-config/>
-
-    <bean id="tire" class="com.sj.study.springmvc.di.KoreanTire"/>
-    <bean id="americanTire" class="com.sj.study.springmvc.di.AmericanTire"/>
-    <bean id="car" class="com.sj.study.springmvc.di.Car"/>
-</beans>
-```
-
-주입하고자 하는 필드에 @Autowired 어노테이션을 달아준다.
 ```java
 public class Car {
 
@@ -222,6 +188,45 @@ public class Car {
     }
 }
 ```
+필드 주입에 대한  @Autowired 예시는 위와 같다.
+
+```java
+public class Car {
+
+    private Tire tire;
+
+    @Autowired // 생략 가능
+    public Car(Tire tire) {
+        this.tire = tire
+    }
+
+    public String getTireBrandName() {
+        return this.tire.getBrand();
+    }
+}
+```
+생성자 주입에 대한  @Autowired 예시는 위와 같다. 하지만 스프링 4.3부터는 생성자 주입에 @Autowired 어노테이션은 생략 가능하다.
+
+
+```java
+public class Car {
+
+    private Tire tire;
+
+    @Autowired
+    public setTire(Tire tire) {
+        this.tire = tire;
+    }
+
+    public String getTireBrandName() {
+        return this.tire.getBrand();
+    }
+}
+```
+
+setter 주입에 대한  @Autowired 예시는 위와 같다.
+
+@Autowired 어노테이션을 사용한 의존성 주입은 빈의 라이프사이클 인터페이스인 BeanPostProessor의 구현체인 AutowiredAnnotationBeanPostProcessor 의해 동작한다.
 
 #### Resource
 
