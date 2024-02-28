@@ -177,6 +177,8 @@ public static void main(String[] args) {
 #### Autowired
 @Autowired 어노테이션은 스프링 프레임워크에서 제공하는 어노테이션이다. @Autowired 어노테이션은 필드, 생성자(스프링 4.3부터 생략 가능), setter 메소드에 사용해 의존성을 주입받을 수 있다.
 
+@Autowired 어노테이션을 사용한 의존성 주입은 빈의 라이프사이클 인터페이스인 BeanPostProessor의 구현체인 **AutowiredAnnotationBeanPostProcessor** 의해 동작한다.
+
 ```java
 public class Car {
 
@@ -225,8 +227,6 @@ public class Car {
 ```
 
 setter 주입에 대한  @Autowired 예시는 위와 같다.
-
-@Autowired 어노테이션을 사용한 의존성 주입은 빈의 라이프사이클 인터페이스인 BeanPostProessor의 구현체인 AutowiredAnnotationBeanPostProcessor 의해 동작한다.
 
 #### Resource
 

@@ -26,7 +26,7 @@ public OwnerController {
 
 스프링의 IoC Container (이하 스프링 컨테이너)는 BeanFactory와 ApplicationContext 인터페이스가 있다.
 
-BeanFactory를 빈을 생성하고 의존성을 주입하는 가장 기본적인 스프링 IoC 컨테이너 인터페이스이다. 이를 확장한 ApplicationContext는 다국어, 환경 변수, 이벤트 발행 / 구독에 대한 처리가 추가된 인터페이스이다. 스프링 공식문서는 특별한 경우가 아니면 ApplicationContext를 활용하기를 권장하고 있다.
+BeanFactory를 빈을 생성하고 의존성을 주입하는 가장 기본적인 스프링 IoC 컨테이너 인터페이스이다. 이를 확장한 ApplicationContext는 다국어, 프로필, 이벤트 발행 / 구독에 대한 처리가 추가된 인터페이스이다. 스프링 공식문서는 특별한 경우가 아니면 ApplicationContext를 활용하기를 권장하고 있다.
 
 스프링 컨테이너가 담당하는 의존성 주입 관련한 주요 기능은 다음과 같다
 - 빈을 생성하고 관리한다 
@@ -75,6 +75,8 @@ public @interface Controller {
 스프링은 빈의 라이프사이클 인터페이스를 활용해 @Component 어노테이션이 적용된 클래스를 찾고, 해당 클래스의 인스턴스를 생성하여 빈으로 등록하는 작업을 한다. 
 
 @Component 어노테이션이 적용된 클래스를 찾는 과정을 **컴포넌트 스캔**이라고 한다. @SpringBootApplication이 적용된 어노테이션을 따라가 보면 @ComponentScan 어노테이션이 있다. 이 이노테이션에 등록된 패키지를 기준으로 해당 패키지와 하위 패키지에서 빈으로 등록할 클래스를 찾는다.
+
+실제 스캐닝은 ConfigurationClassPostProcessor에 의해 처리가 된다.
 ```java
 @ComponentScan(
     excludeFilters = {@Filter(

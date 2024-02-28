@@ -45,7 +45,7 @@ public class MyAspect {
 @Aspect 어노테이션을 클래스에 적용하면 해당 클래스를 AOP에서 사용하겠다는 의미를 가진다.
 
 #### Pointcut
-Pointcut은 Aspect에 로직을 적용할 대상에 대한 정보를 지정한다. 위 예시로 봤을때 아래 코드 블록에 해당된다.
+Pointcut은 Aspect를 **어디에** 적용한건지에 대한 정보를 가지고 있다.
 ```java
 "execution(public void com.sj.study.springmvc.aop.Boy.runSomething())"
 ```
@@ -58,7 +58,7 @@ execution외에도 해당되는 어노테이션을 가진 메소드를 대상으
 ```
 
 #### JoinPoint
-JoinPoint는 Aspect가 적용된 메소드를 의미한다. Aspect가 적용된 메소드를 JoinPoint 인터페이스 타입의 매개변수로 넘겨받아 사용할 수 있다.
+JoinPoint는 Aspect가 끼어들 수 있는 지점을 의미한다. Aspect가 적용된 메소드를 JoinPoint 인터페이스 타입의 매개변수로 넘겨받아 사용할 수 있다.
 
 ![joinpoint](./img/joinpoint.png)
 
