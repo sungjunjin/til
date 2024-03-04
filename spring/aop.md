@@ -32,6 +32,7 @@ Aspect를 등록하면 스프링 컨테이너에서 BeanPostProcessor 인터페�
 
 ## AOP 구성 & 예시
 ```java
+@Component
 @Aspect
 public class MyAspect {
     @Before("execution(public void com.sj.study.springmvc.aop.Boy.runSomething())")
@@ -42,7 +43,7 @@ public class MyAspect {
 ```
 
 #### @Aspect
-@Aspect 어노테이션을 클래스에 적용하면 해당 클래스를 AOP에서 사용하겠다는 의미를 가진다.
+@Aspect 어노테이션을 클래스에 적용하면 해당 클래스를 AOP에서 사용하겠다는 의미를 가진다. 해당 클래스는 @Component 어노테이션을 사용해 빈으로도 등록해준다.
 
 #### Pointcut
 Pointcut은 Aspect를 **어디에** 적용한건지에 대한 정보를 가지고 있다.
