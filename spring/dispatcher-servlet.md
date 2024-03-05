@@ -27,7 +27,7 @@ end
 
 서블릿 컨테이너로부터 받은 클라이언트의 HTTP 요청은 필터를 거쳐 Spring Context에서 가장 먼저 디스패처 서블릿에게 전달된다.
 
-#### 2. 요청에 대한 적합한 핸들러를 찾아 컨트롤러로 전달
+#### 2. 요청을 분석하고 적합한 핸들러를 찾아 컨트롤러로 전달
 ```java
 @Nullable
 protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
@@ -43,13 +43,13 @@ protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Ex
 }
 ```
 
-디스패처 서블릿은 getHander 메소드를 사용해 요청에 대한 적합한 핸들러를 찾아 인터셉터 등의 정보를 포함한 HandlerExecutionChain으로 감싸 반환한다.
+getHander 메소드 내부에서 handlerMapping을 통해 요청에 대한 적합한 핸들러를 찾아 인터셉터 등의 정보를 포함한 HandlerExecutionChain으로 감싸 반환한다.
 
 ```java
 // Actually invoke the handler.
 mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
 ```
-핸들러 어댑터가 컨트롤러로 요청을 위임한다.
+핸들러 어댑터가 컨트롤러로 요청을 위임한다 -> 핸들러의 메소드를 실행한다.
 
 #### 3. 비즈니스 로직을 처리 & 반환
 컨트롤러는 서비스에 구현된 비즈니스 로직을 처리하고 결과를 반환한다.
