@@ -44,7 +44,91 @@ public class Controller {
 ```
 Controller 메소드의 파라미터에 @RequestBody를 적용하면 요청 본문의 데이터를 HttpMessageConverter를 통해 변환한 타입의 객체로 가져올 수 있다. 
 
+## @ResponseBody
+컨트롤러의 메소드에서 리턴하는 값을 HttpMessageConverter를 통해 HTTP 응답 본문으로 변환한다.
 
+```java
+@Controller
+public class Controller {
+    @PostMapping("/post")
+    @ResponseBody
+    public UserDto post(@RequestBody UserDto userDto) {
+        UserDto userDto = new UserDto("name", "phone");
+        return userDto;      
+    }
+}
+```
 
+### @Controller vs @RestController
+#### @Controller
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface Controller {
 
+	/**
+	 * Alias for {@link Component#value}.
+	 */
+	@AliasFor(annotation = Component.class)
+	String value() default "";
 
+}
+```
+주로 ViewResolver와 함께 사용하여 뷰 템플릿을 렌더링하고, Model 객체와 함께 클라이언트에게 반환한다
+
+#### @RestController
+```java
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Controller
+@ResponseBody
+public @interface RestController {
+
+	/**
+	 * The value may indicate a suggestion for a logical component name,
+	 * to be turned into a Spring bean in case of an autodetected component.
+	 * @return the suggested component name, if any (or empty String otherwise)
+	 * @since 4.0.1
+	 */
+	@AliasFor(annotation = Controller.class)
+	String value() default "";
+
+}
+```
+HTTP 응답의 바디에 직렬화된 객체를 반환한다. @Controller 어노테이션에 **@ResponseBody** 어노테이션이 추가되었다. 모델 및 뷰가 아닌 데이터 자체가 반환된다.
+
+## ResponseEntity
+응답 헤더, 상태 코드, 본문을 직접 다루고 싶은 경우에 사용한다.
+
+### 200 응답 반환
+```java
+@GetMapping("/example")
+public ResponseEntity<String> getExample() {
+    // HTTP 상태 코드 200과 함께 응답 반환
+    return ResponseEntity.ok("Success");
+}
+```
+
+### 헤더 설정
+```java
+@GetMapping("/example")
+public ResponseEntity<String> getExample() {
+    HttpHeaders headers = new HttpHeaders();
+    headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+
+    // 헤더와 함께 HTTP 상태 코드 200과 응답 반환
+    return ResponseEntity.ok().headers(headers).body("Success");
+}
+```
+
+### 400 응답 반환
+```java
+@GetMapping("/example")
+public ResponseEntity<String> getExample() {
+    // HTTP 상태 코드 400과 함께 응답 반환
+    return ResponseEntity.badRequest().body("bad request");
+}
+```
