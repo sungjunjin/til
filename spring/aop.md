@@ -59,10 +59,7 @@ execution외에도 해당되는 어노테이션을 가진 메소드를 대상으
 ```
 
 #### JoinPoint
-JoinPoint는 Aspect가 끼어들 수 있는 지점을 의미한다. Aspect가 적용된 메소드를 JoinPoint 인터페이스 타입의 매개변수로 넘겨받아 사용할 수 있다.
-
-![joinpoint](./img/joinpoint.png)
-
+클라이언트가 호출하는 모든 비즈니스 메소드를 뜻한다. 즉, JoinPoint는 Aspect가 끼어들 수 있는 지점을 의미한다.
 
 #### Advice
 Advice는 Pointcut에 적용할 로직, 즉 메소드를 의미한다. 또한 언제 로직을 적용할건지에 대한 개념까지 포함되어 있다.
