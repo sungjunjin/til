@@ -364,11 +364,11 @@ public class ReaderTest {
 ### try-catch-finally
 
 #### 리소스 담당 변수 선언 위치
-FileReader, BufferedReader, FileWriter, BufferedWriter 객체들은 입출력 리소스를 사용하기 때문에 finally 블록에서 반드시 close 메소드를 호출해 자원을 해제하지 않으면 리소스 누수가 발생한다. Try 블록 내부에서 해당 변수들을 선언할 경우 try 블록의 스코프에서만 유효한 지역 변수가 되기 때문에 finally 블록에서 접근하려면 try 블록 외부에 변수를 선언해햐 한다.
+FileReader, BufferedReader, FileWriter, BufferedWriter 객체들은 입출력 리소스를 사용하기 때문에 finally 블록에서 반드시 close 메소드를 호출해 자원을 해제하지 않으면 리소스 누수가 발생한다. **또한 사용후 자원을 해제해주지 않으면 다른 사용처에서 접근이 불가능하다**. Try 블록 내부에서 해당 변수들을 선언할 경우 try 블록의 스코프에서만 유효한 지역 변수가 되기 때문에 finally 블록에서 접근하려면 try 블록 외부에 변수를 선언해햐 한다.
 
 아니면 아래와 같이 try-with-resource 구문을 활용할 수 있다
 
 #### close 호출 순서
-finally 블록 내부에서 close 메소드를 호출할 객체의 순서는 가장 마지막에 open 한 객체부터 닫아줘야 정상적인 처리가 가능하다. 예를들어 FileWriter -> BufferedWriter 순으로 객체를 생성했다면 BufferedWriter -> FileWriter 순으로 객체를 close 해줘야 한다.
+finally 블록 내부에서 close 메소드를 호출할 객체의 순서는 **가장 마지막에 open 한 객체부터 닫아줘야** 정상적인 처리가 가능하다. 예를들어 FileWriter -> BufferedWriter 순으로 객체를 생성했다면 BufferedWriter -> FileWriter 순으로 객체를 close 해줘야 한다.
 
 
