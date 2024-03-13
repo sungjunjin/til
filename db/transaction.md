@@ -28,7 +28,105 @@
 #### Serializable(직렬화)
 
 ## JDBC Transaction
+JDBC에서 트랜잭션을 적용하는 방법은 다음과 같다.
+
+```java
+Connection conn = DriverManager.getConnection(..);
+conn.setAutoCommit(false); // 오토 커밋 모드 해제
+
+try {
+    // 로직 수행
+    conn.commit();
+} catch(Exception e) {
+    // 예외 발생 시 롤백
+    conn.rollback();
+} finally {
+    // 커넥션 해제
+    if(conn != null) conn.close();
+}
+```
+
+1. 데이터베이스 커넥션 객체를 생성한다
+2. 커넥션 객체로부터 auto commit mode를 false로 설정한다
+3. 서비스 코드의 마지막에 커넥션 객체의 commit 메소드를 호출해 데이터베이스에 결과를 반영한다
+4. 중간에 예외 발생 시 catch문 내부에서 커넥션 객체의 rollback 메소드를 호출한다
+5. finally 구문에서 사용한 자원을 해제한다
 
 ## Spring Transaction
 
+스프링이 제공하는 트랜잭션 추상화는 JDBC 트랜잭션을 사용하면서 발생하는 트랜잭션 관련 코드에 대한 중복, 커넥션 객체의 공유등의 문제를 해결하기 위해 추상화된 트랜잭션 인터페이스를 제공한다.
+
 ### PlatformTransactionManager
+PlatformTransactionManager는 스프링에서 트랜잭션을 지원하는 핵심적인 인터페이스이다. 트랜잭션을 시작하거나 기존 트랜잭션에 참여하는 getTransaction, 쿼리 실행 결과를 커밋하는 commit, 예외발생 시 롤백을 수행하는 rollback 메소드로 구성되어 있다.
+
+```mermaid
+classDiagram
+    PlatformTransactionManager <|--DataSourceTransactionManager
+    PlatformTransactionManager <|--JpaTransactionManager
+    PlatformTransactionManager <|--HibernateTransactionManager
+
+    class PlatformTransactionManager {
+        getTransaction() TransactionStatus
+        commit(TransactionStatus status)
+        rollback(TransactionStatus status)
+    }
+
+    class DataSourceTransactionManager {
+    }
+
+    class JpaTransactionManager {
+    
+    }
+
+    class HibernateTransactionManager {
+    
+    }
+
+    <<interface>> PlatformTransactionManager
+```
+
+또한 PlatformTransactionManager는는 트랜잭션에 사용하는 커넥션 객체에 대한 관리를 담당한다. 
+
+DB 사용기술에 따라 DataSourceTransactionManager, JpaTransactionManager, HibernateTransactionManager등의 구현체가 있다. 스프링 내부에서 설치된 DB 라이브러리를 참고해 적합한 구현체를 지정한다.
+
+### TransactionSynchronizationManager
+트랜잭션을 유지하러면 반드시 한개의 커넥션 객체를 트랜잭션의 시작부터 끝까지 유지해야 한다. 따라서 비즈니스 로직간에 동일한 커넥션 객체를 항상 공유해야 하는데, 이 역할을 스프링의 TransactionSynchronizationManager가 수행해준다. TransactionSynchronizationManager는 내부적으로 ThreadLocal을 사용해 트랜잭션에 사용하는 커넥션 객체를 관리하게 된다. 
+
+### 선언적 Transaction
+```java
+
+public void myMethod() {
+    TransactionStatus status = txManager.getTransaction(def);
+
+    try {
+        // put your business logic here
+        doSomething();
+
+        txManager.commit(status);
+    } catch (MyException ex) {
+        txManager.rollback(status);
+        throw ex;
+    }
+}
+```
+개별적인 트랜잭션 코드를 직접 repository나 service에 구현하는 방법을 프로그래밍적 트랜잭션(programmatic transaction)이라고 한다. 프로그래밍적 트랜잭션 관리 방법은 중복된 try (commit) - catch (rollback)에 대한 코드가 비즈니스 로직 곳곳에 중복되어 있다는 치명적인 단점을 가진다.
+
+```java
+@Transactional
+public void myMethod() {
+    doSomething();
+}
+```
+스프링에서는 @Transaction 어노테이션을 메소드나, 클래스에 활용해 트랜잭션에 활용하는 중복코드를 없애고 순수 비즈니스 로직만 남길 수 있다. 이를 선언적 트랜잭션 프로그래밍 기법이라고 한다.
+
+스프링의 선언적 트랜잭션은 Spring AOP 기반으로 동작한다. @Transactional 어노테이션이 적용된 클래스를 기반으로 PlatformTransactionManager의 트랜잭션 관련 코드와 TransactionSynchronizationManager를 활용한 커넥션 객체 관리가 적용된 프록시 클래스를 활용해 내부적으로 트랜잭션을 처리한다
+
+```mermaid
+flowchart LR
+client[Client]
+proxy[TransactionService$$SpringCGLIB$$0]
+repository[Repository]
+
+client ---> proxy ---> repository
+```
+

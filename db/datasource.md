@@ -86,3 +86,28 @@ dataSource.setPoolName("MyPool");
 
 일반적으로 HikariDataSource 커넥션 풀의 최대 개수는 10개이다. 위 예시 외에도 데이터베이스 커넥션 타임아웃과 같은 값을 설정해줄 수 있다.
 
+## Spring을 사용한 DataSource, PlatformTransactionManager 등록
+커넥션 관리에 사용되는 DataSource는 자바 설정파일을 통해 직접 등록해줘야 한다.
+```java
+@Configuration
+public class DataSourceConfig {
+    @Bean
+    public DataSource DataSource() {
+        return new DriverManagerDataSource(DB_URL, USERNAME, PASSWORD);
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
+    }
+}
+```
+
+### Spring Boot를 사용한 자동 DataSource, PlatformTransactionManager 등록
+Spring Boot를 사용하면 application.properties나 application.yml에 있는 속성을 참고해서 DataSource,PlatformTransactionManager  빈을 자동으로 등록해준다.
+
+```
+spring.datasource.driver-class-name=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+```
