@@ -92,14 +92,13 @@ DB 사용기술에 따라 DataSourceTransactionManager, JpaTransactionManager, H
 ### TransactionSynchronizationManager
 트랜잭션을 유지하러면 반드시 한개의 커넥션 객체를 트랜잭션의 시작부터 끝까지 유지해야 한다. 따라서 비즈니스 로직간에 동일한 커넥션 객체를 항상 공유해야 하는데, 이 역할을 스프링의 TransactionSynchronizationManager가 수행해준다. TransactionSynchronizationManager는 내부적으로 ThreadLocal을 사용해 트랜잭션에 사용하는 커넥션 객체를 관리하게 된다. 
 
-### 선언적 Transaction
+### @Transactional
 ```java
 
 public void myMethod() {
     TransactionStatus status = txManager.getTransaction(def);
 
     try {
-        // put your business logic here
         doSomething();
 
         txManager.commit(status);
@@ -117,16 +116,79 @@ public void myMethod() {
     doSomething();
 }
 ```
-스프링에서는 @Transaction 어노테이션을 메소드나, 클래스에 활용해 트랜잭션에 활용하는 중복코드를 없애고 순수 비즈니스 로직만 남길 수 있다. 이를 선언적 트랜잭션 프로그래밍 기법이라고 한다.
+스프링에서는 @Transaction 어노테이션을 메소드나, 클래스에 활용해 트랜잭션에 활용하는 중복코드를 없애고 순수 비즈니스 로직만 남길 수 있다. 이를 **선언적 트랜잭션 프로그래밍 기법이라고 한다.**
 
-스프링의 선언적 트랜잭션은 Spring AOP 기반으로 동작한다. @Transactional 어노테이션이 적용된 클래스를 기반으로 PlatformTransactionManager의 트랜잭션 관련 코드와 TransactionSynchronizationManager를 활용한 커넥션 객체 관리가 적용된 프록시 클래스를 활용해 내부적으로 트랜잭션을 처리한다
+#### @Transaction의 동작 구조
 
 ```mermaid
 flowchart LR
 client[Client]
 proxy[TransactionService$$SpringCGLIB$$0]
-repository[Repository]
+service[TransactionService]
 
-client ---> proxy ---> repository
+client ---> proxy ---> service
 ```
+
+스프링의 선언적 트랜잭션은 Spring AOP 기반으로 동작한다. @Transactional 어노테이션이 적용된 클래스를 기반으로 PlatformTransactionManager의 트랜잭션 관련 코드와 TransactionSynchronizationManager를 활용한 커넥션 객체 관리가 적용된 프록시 클래스를 대신 스프링 컨테이너에 빈으로 등록한다.
+
+- 등록된 프록시 빈은 원본 객체를 상속받아 만들어지기 때문에 다형성을 통한 원본 객체 타입의 빈 주입이 가능하다
+
+- 등록된 프록시 빈은 내부적으로 원본 객체를 멤버로 가지고 있으며 원본 객체의 메소드를 호출할 수 있다
+
+- 클라이언트는 등록된 프록시 빈을 호출한다
+
+- @Transactional 어노테이션이 특정 메소드에만 적용되었다면 어노테이션이 적용된 메소드만 프록시 메소드를 호출하고 나머지 메소드는 원본 객체의 메소드를 위임하여 호출한다
+
+- 원래 @Transactional은 public 접근제한자에만 적용이 가능했지만 스프링 6.0부터 default, protected 접근제한자에도 적용이 가능해졌다
+    - 관련 커밋 : https://github.com/spring-projects/spring-framework/commit/37bebeaaaf294ef350ec646604124b5b78c6e690   
+
+#### @Transaction의 우선 순위
+@Transaction 어노테이션의 우선 순위는 항상 **더 구체적이고 자세한 것이 높은 우선순위를 가진다.** 
+
+예를들어 메소드와 클래스에 @Transactional이 둘 다 적용되어 있다면, 더 구체적인 메소드가 더 높은 우선순위를 가진다. 또한 클래스와 인터페이스 사이에서는 추상적인 인터페이스보다 더 구체적인 클래스가 높은 우선순위를 가진다.
+
+
+### Spring Transaction의 예외
+```java
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Inherited
+@Documented
+@Reflective
+public @interface Transactional {
+	/**
+	 * Defines zero (0) or more exception {@linkplain Class types}, which must be
+	 * subclasses of {@link Throwable}, indicating which exception types must cause
+	 * a transaction rollback.
+	 * <p>By default, a transaction will be rolled back on {@link RuntimeException}
+	 * and {@link Error} but not on checked exceptions (business exceptions). See
+	 * {@link org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)}
+	 * for a detailed explanation.
+	 * <p>This is the preferred way to construct a rollback rule (in contrast to
+	 * {@link #rollbackForClassName}), matching the exception type and its subclasses
+	 * in a type-safe manner. See the {@linkplain Transactional class-level javadocs}
+	 * for further details on rollback rule semantics.
+	 * @see #rollbackForClassName
+	 * @see org.springframework.transaction.interceptor.RollbackRuleAttribute#RollbackRuleAttribute(Class)
+	 * @see org.springframework.transaction.interceptor.DefaultTransactionAttribute#rollbackOn(Throwable)
+	 */
+	Class<? extends Throwable>[] rollbackFor() default {};
+
+    Class<? extends Throwable>[] noRollbackFor() default {};
+
+    // 나머지 생략
+}
+```
+스프링 트랜잭션은 기본적으로 Unchecked 예외 발생 시 롤백 하고 Checked 예뵈 발생 시 롤백을 하지 않는다. 
+
+```java
+// 체크 에외 rollbackFor -> MyException 예외 발생 시 롤백되지 않고 커밋된다
+@Transactional(noRollbackFor = MyException.class)
+void throwCheckedExceptionRollbackFor() throws MyException {
+    log.info("call checkedException noRollbackFor");
+    throw new MyException();
+        }
+```
+
+하지만 @Transactional 어노테이션의 rollbackFor, noRollbackFor 옵션을 사용해 발생한 예외에 대한 롤백처리를 커스텀 할 수 있다.
 
