@@ -179,7 +179,7 @@ public @interface Transactional {
     // 나머지 생략
 }
 ```
-스프링 트랜잭션은 기본적으로 Unchecked 예외 발생 시 롤백 하고 Checked 예뵈 발생 시 롤백을 하지 않는다. 
+스프링 트랜잭션은 **기본적으로 Unchecked 예외 발생 시 롤백 하고 Checked 예뵈 발생 시 롤백을 하지 않는다**. 
 
 ```java
 // 체크 에외 rollbackFor -> MyException 예외 발생 시 롤백되지 않고 커밋된다
@@ -189,6 +189,5 @@ void throwCheckedExceptionRollbackFor() throws MyException {
     throw new MyException();
         }
 ```
-
 하지만 @Transactional 어노테이션의 rollbackFor, noRollbackFor 옵션을 사용해 발생한 예외에 대한 롤백처리를 커스텀 할 수 있다.
 
