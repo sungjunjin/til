@@ -27,14 +27,14 @@
 #### Repeatable Read(반복 가능한 읽기)
 #### Serializable(직렬화)
 
-## JDBC Transaction
-JDBC에서 트랜잭션을 적용하는 방법은 다음과 같다.
+## 커넥션과 Transaction
+하나의 트랜잭션은 하나의 DB 커넥션을 가진다. 모든 트랜잭션은 커넥션을 가져와 사용하고 닫는 사이에 실행된다. 예시로 JDBC에서 트랜잭션을 적용하는 방법은 다음과 같다.
 
 ```java
-Connection conn = DriverManager.getConnection(..);
-conn.setAutoCommit(false); // 오토 커밋 모드 해제
-
 try {
+    // 커넥션 객체 가져오기
+    Connection conn = DriverManager.getConnection(..);
+    conn.setAutoCommit(false); // 오토 커밋 모드 해제 -> 트랜잭션의 시작
     // 로직 수행
     conn.commit();
 } catch(Exception e) {
@@ -54,7 +54,7 @@ try {
 
 ## Spring Transaction
 
-스프링이 제공하는 트랜잭션 추상화는 JDBC 트랜잭션을 사용하면서 발생하는 트랜잭션 관련 코드에 대한 중복, 커넥션 객체의 공유등의 문제를 해결하기 위해 추상화된 트랜잭션 인터페이스를 제공한다.
+스프링이 제공하는 트랜잭션 추상화는 JDBC 트랜잭션을 사용하면서 발생하는 트랜잭션 관련 코드에 대한 중복, 커넥션 객체의 공유등의 문제를 해결하기 위해 추상화된 트랜잭션 인터페이스인 PlatformTransactionManager를 제공한다.
 
 ### PlatformTransactionManager
 PlatformTransactionManager는 스프링에서 트랜잭션을 지원하는 핵심적인 인터페이스이다. 트랜잭션을 시작하거나 기존 트랜잭션에 참여하는 getTransaction, 쿼리 실행 결과를 커밋하는 commit, 예외발생 시 롤백을 수행하는 rollback 메소드로 구성되어 있다.
