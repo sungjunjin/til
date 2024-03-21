@@ -64,7 +64,7 @@ MemberService의 joinV2 메소드부터 시작되는 트랜잭션이 MemberRepos
 
 참고로 세개의 메소드 모두 @Transactional 어노테이션이 적용되어 있으며 기본 전파레벨인 REQUIRED로 되어 있어 Service 메소드가 시작한 트랜잭션에 나머지 Repository 메소드가 참여하여 하나의 트랜잭션으로 묶인다.
 
-이 때 LogRepository의 save 메소드에서 런타임 예외가 발생하고 MemberService의 joinV2 메소드에서 해당 예외를 catch 하여 처리하면 정상 처리로 간주되어 LogRepository를 제외한 나머지 트랜잭션이 제대로 커밋될까?
+이 때 LogRepository의 save 메소드에서 런타임 예외가 발생하고 MemberService의 joinV2 메소드에서 해당 예외를 catch 하여 처리하면 정상 흐름으로 간주되어 LogRepository를 제외한 나머지 트랜잭션이 제대로 커밋될까?
 
 **정답은 "모두 롤백된다" 이다.**  
 
