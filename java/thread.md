@@ -381,7 +381,7 @@ ThreadGroup이란 서로 관련된 쓰레드를 그룹으로 묶어서 다루기
 | void setDaemon(boolean daemon) | 지금 쓰레드 그룹에 속한 쓰레드들을 데몬으로 지정한다. |
 
 ## Thread Local
-자바에서 제공하는 ThreadLocal 클래스는 쓰레드 내부에서 사용할 수 있는 고유한 변수다. 해당 변수는 쓰레드 내부에서 공유되며 다른 쓰레드에서 참조할 수 없다.
+자바에서 제공하는 ThreadLocal 클래스는 쓰레드 내부에서 사용할 수 있는 고유한 저장소이다. 쓰레드 내부에서 공유되며 다른 쓰레드에서 참조할 수 없다.
 
 ThreadLocal은 쓰레드마다 고유한 ThreadLocalMap 객체를 생성해 변수를 저장하고 조회한다.
 ```java
