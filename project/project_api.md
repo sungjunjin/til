@@ -114,59 +114,59 @@
 
 상품 구매를 위한 페이머니 기반 결제 / 송금 기능을 담당합니다. 회원의 페이머니 잔액에 따라 충전을 진행합니다. 상품을 결제한 데이터를 기반으로 결제 원장을 기록합니다.
 
-**페이머니 기반 상품 결제 [POST  `/v1/payments/pay/productId}`]**
+### 페이머니로 상품 결제
+- **페이머니 기반 상품 결제 [POST  `/v1/payments/pay/productId}`]**
 
-- 시퀀스 다이어그램
-    
-    ```mermaid
-    sequenceDiagram
-        Client ->> Payment : 상품 결제 요청
-        Payment ->> DB : 결제 원장 기록
-       
-        alt 잔액 부족 시 충전
-    	    Payment ->> Banking : 계좌 출금 메소드 호출
-    	    Banking ->> Payment : 계좌 출금 메소드 출금 응답
-    	    Payment ->> Payment : 페이머니 충전
-        end
+    - 시퀀스 다이어그램
         
-        Payment ->> DB : 결제 원장[결제 완료, 결제 실패] 업데이트
-        Payment ->> Client : 상품 결제 응답
-    ```
-    
-
-**페이머니 충전 [POST  `/v1/payments/charge`]**
-
-페이머니 충전 금액을 충전 요청, 상품 결제 필요 충전 금액 기준으로 **10,000원 단위 반올림** 하여 충전됩니다. 
-
-- 시퀀스 다이어그램
-    
-    ```mermaid
-    sequenceDiagram
-        Client ->> Payment : 페이머니 충전 요청
-        Payment ->> Banking : 계좌 출금 메소드 호출
-        Banking ->> Payment : 계좌 출금 메소드 출금 응답
-        Payment ->> Banking : 출금 금액 중앙 법인계좌 입금 요청
-        Payment ->> Payment : 페이머니 충전
-    	  Payment ->> Client : 페이머니 충전 응답
-    ```
-    
-
-**페이머니 송금[POST `/v1/payments/send`]**
-
-- 시퀀스 다이어그램
-    
-    ```mermaid
-    sequenceDiagram
-        Client ->> Payment : 페이머니 송금 요청
+        ```mermaid
+        sequenceDiagram
+            Client ->> Payment : 상품 결제 요청
+            Payment ->> DB : 결제 원장 기록
         
-        alt 잔액 부족 시 충전
-    	    Payment ->> Banking : 계좌 출금 메소드 호출
-    	    Banking ->> Payment : 계좌 출금 메소드 출금 응답
-    	    Payment ->> Payment : 페이머니 충전
-        end
+            alt 잔액 부족 시 충전
+                Payment ->> Banking : 계좌 출금 메소드 호출
+                Banking ->> Payment : 계좌 출금 메소드 출금 응답
+                Payment ->> Payment : 페이머니 충전
+            end
+            
+            Payment ->> DB : 결제 원장[결제 완료, 결제 실패] 업데이트
+            Payment ->> Client : 상품 결제 응답
+        ```
+    
+### 페이머니 충전
+- **페이머니 충전 [POST  `/v1/payments/charge`]**
+
+    - 페이머니 충전 금액을 충전 요청, 상품 결제 필요 충전 금액 기준으로 **10,000원 단위 반올림** 하여 충전됩니다. 
+
+    - 시퀀스 다이어그램
+        ```mermaid
+        sequenceDiagram
+            Client ->> Payment : 페이머니 충전 요청
+            Payment ->> Banking : 계좌 출금 메소드 호출
+            Banking ->> Payment : 계좌 출금 메소드 출금 응답
+            Payment ->> Banking : 출금 금액 중앙 법인계좌 입금 요청
+            Payment ->> Payment : 페이머니 충전
+            Payment ->> Client : 페이머니 충전 응답
+        ```
+    
+### 페이머니 송금
+- **페이머니 송금[POST `/v1/payments/send`]**
+
+    - 시퀀스 다이어그램
         
-    	  Payment ->> Client : 페이머니 송금 응답
-    ```
+        ```mermaid
+        sequenceDiagram
+            Client ->> Payment : 페이머니 송금 요청
+            
+            alt 잔액 부족 시 충전
+                Payment ->> Banking : 계좌 출금 메소드 호출
+                Banking ->> Payment : 계좌 출금 메소드 출금 응답
+                Payment ->> Payment : 페이머니 충전
+            end
+            
+            Payment ->> Client : 페이머니 송금 응답
+        ```
     
 
 ## 주문
