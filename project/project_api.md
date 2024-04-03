@@ -8,20 +8,143 @@
 
 페이머니를 이용하는 일반 고객에게 회원가입과 로그인 서비스 및 고객 정보 조회 기능을 제공합니다.
 
-- 회원 가입  **[POST `/v1/members/sign-up` ]**
+- **회원 가입**
     - 이메일, 비밀번호로 회원 가입합니다.
 
-- 로그인 **[POST `/v1/members/sign-in` ]**
-    - 회원 이메일, 비밀번호로 로그인 합니다.
+    - Request
+        ```json
+        [POST] /v1/members/sign-up HTTP/1.1
 
-- 내 정보 조회 **[GET `/v1/members/{memberId}` ]**
+        {
+            "email" : "abcd@gmail.com",
+            "password" : "abcd123ef!@"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 201 Created
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **로그인** 
+    - 회원 이메일, 비밀번호로 로그인 합니다. 로그인 성공 시 Access Token과 Refresh Token을 발급합니다.
+
+    - Request
+        ```json
+        [POST] /v1/members/sign-in HTTP/1.1
+
+        {
+            "email" : "abcd@gmail.com",
+            "password" : "abcd123ef!@"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+        }
+        ```
+
+- **상세 정보 조회**
     - 로그인한 회원의 상세 정보를 조회 합니다.
 
-- 내 정보 수정 **[PUT `/v1/members/{memberId}` ]**
-    - 로그인한 회원의 상세 정보를 수정 합니다.
+    - Request
+        ```json
+        [GET] /v1/members/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
-- 회원 탈퇴 **[DELETE `/v1/members/{memberId}` ]**
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                "email" : "test@gmail.com",
+                "memberType" : "MEMBER",
+                "balance" : 12500
+            }
+        }
+        ```
+
+- **비밀번호 수정**
+    - 로그인한 회원의 비밀번호를 수정 합니다.
+
+    - Request
+        ```json
+        [PATCH] /v1/members/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "password" : "abcd123ef!@"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **회원 탈퇴**
     - 로그인한 회원의 회원 정보를 비활성화 하고, 탈퇴 처리를 진행합니다.
+
+    - Request
+        ```json
+        [DELETE] /v1/members/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+## 인증 / 인가
+
+회원의 인증 / 인가 관련 기능을 제공합니다.
+
+- **액세스 토큰 재발급**
+    - 액세스 토큰을 새롭게 생성하여 발급합니다.
+
+    - Request
+        ```json
+        [POST] /v1/auth/refresh HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+                "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+        }
+        ```
 
 ## 상품
 
@@ -29,30 +152,212 @@
 
 회원에게 판매하는 상품에 대한 정보를 제공합니다. 
 
-- **판매 상품 리스트 조회 [GET `/v1/products` ]**
+- **판매 상품 리스트 조회**
     - 판매 중인 상품에 대한 리스트를 제공합니다. 카테고리, 프로모션 여부, 가격등의 조건에 대한 필터링 리스트도 제공합니다.
+        - 상품 리스트는 커서 기반의 페이징 리스트로 제공됩니다.   
+
+    - Request
+        ```json
+        [GET] /v1/products?size=&cursor=&category=&name=&price= HTTP/1.1
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                [
+                    {
+                        "productId" : 1,
+                        "vendorId" : 1,
+                        "name" : "테스트 상품",
+                        "serialNo" : "TEST_01",
+                        "quantity" : 10,
+                        "price" : 10000,
+                        "category" : "TICKET",
+                        "status" : "ON_SALE",
+                        "imgUrl" : "https://cdn.example.com/image.jpg"
+                    },
+                ]
+                .
+                .
+                .
+            }
+        }
+        ```
     
-- **판매 상품 상세 조회  [GET `/v1/products/{productId}` ]**
+- **판매 상품 상세 조회**
     - 판매 중인 상품에 대한 상세 정보를 제공합니다.
+
+    - Request
+        ```json
+        [GET] /v1/products/{productId} HTTP/1.1
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                "productId" : 1,
+                "vendorId" : 1,
+                "name" : "테스트 상품",
+                "serialNo" : "TEST_01",
+                "quantity" : 10,
+                "price" : 10000,
+                "category" : "TICKET",
+                "status" : "ON_SALE",
+                "imgUrl" : "https://cdn.example.com/image.jpg"
+            }
+        }
+        ```
 
 ### 가맹점 상품
 
 가맹점에게 상품 등록 / 조회 / 수정 / 삭제에 대한 기능을 제공합니다. 상품의 가격은 일괄 원화(KRW)로 관리합니다. 
 
-- **가맹점별 상품 등록 [POST `/v1/products/{vendorId}`]**
+- **가맹점별 상품 등록**
     - 가맹점에서 판매할 상품을 등록합니다.
 
-- **가맹점별 상품 리스트 조회 [GET `/v1/products/{vendorId}`]**
+    - Request
+        ```json
+        [POST] /v1/products/{vendorId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "name" : "테스트 상품",
+            "quantity" : 10,
+            "price" : 100,
+            "category" : "TICKET",
+            "imgUrl" : "https://cdn.example.com/image.jpg"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 201 Created
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **가맹점별 상품 리스트 조회**
     - 가맹점별로 등록한 상품의 리스트를 조회합니다.
-    
-- **가맹점별 상품 상세 조회 [GET `/v1/products/{vendorId}/{productId}`]**
+    - 가맹점별 상품 리스트는 오프셋 기반의 페이징 리스트로 제공됩니다.
+
+    - Request
+        ```json
+        [GET] /v1/products/{vendorId}?offset=&size=&category=&name=&price= HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                [
+                    {
+                        "productId" : 1,
+                        "vendorId" : 1,
+                        "name" : "테스트 상품",
+                        "serialNo" : "TEST_01",
+                        "quantity" : 10,
+                        "price" : 10000,
+                        "category" : "TICKET",
+                        "status" : "ON_SALE",
+                        "imgUrl" : "https://cdn.example.com/image.jpg"
+                    },
+                ]
+                .
+                .
+                .
+            },
+            "size" : 10,
+            "offset" : 2,
+            "total" : 25
+        }
+        ```
+
+- **가맹점별 상품 상세 조회**
     - 가맹점별로 등록한 상품의 상세 정보를 조회합니다.
+
+    - Request
+        ```json
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        [GET] /v1/products/{vendorId}/{productId} HTTP/1.1
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                "productId" : 1,
+                "vendorId" : 1,
+                "name" : "테스트 상품",
+                "serialNo" : "TEST_01",
+                "quantity" : 10,
+                "price" : 10000,
+                "category" : "TICKET",
+                "status" : "ON_SALE",
+                "imgUrl" : "https://cdn.example.com/image.jpg"
+            }
+        }
+        ```
     
-- **가맹점별 상품 수정  [PUT `/v1/products/{vendorId}/{productId}`]**
+- **가맹점별 상품 수정**
     - 가맹점에서 등록한 상품에 대한 정보를 수정합니다.
 
-- **가맹점별  상품 삭제 [DELETE `/v1/products/{vendorId}/{productId}`]**
+    - Request
+        ```json
+        [PUT] /v1/products/{vendorId}/{productId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "vendorId" : 1,
+            "productId" : 1,
+            "name" : "테스트 상품",
+            "quantity" : 10,
+            "price" : 100,
+            "category" : "TICKET",
+            "imgUrl" : "https://cdn.example.com/image.jpg"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **가맹점별  상품 삭제**
     - 가맹점에서 등록한 상품을 비활성화 합니다. 비활성화 된 상품은 상세조회를 할 수 없으며, 상품 리스트 조회 결과에서 제외됩니다.
+
+    - Request
+        ```json
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        [DELETE] /v1/products/{vendorId}/{productId} HTTP/1.1
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
 
 ## 계좌
 
@@ -63,7 +368,7 @@
 페이머니 시스템을 사용하기 위한 은행 계좌 등록을 진행합니다. 회원은 1인당 각각 한개의 은행 계좌를 등록할 수 있습니다. 
 
 - 페이머니 이용을 위한 은행 계좌 등록 & 인증 순서
-    1. **계좌 등록 / 인증 요청 [POST `/v1/accounts`]**
+    1. **계좌 등록 / 인증 요청**
         - 시퀀스 다이어그램
             
             ```mermaid
@@ -72,23 +377,64 @@
                 Server ->> Banking : 1원 송금 요청
                 Banking ->> Server : 1원 송금 응답
                 Server ->> DB : 계좌 정보 등록
-                Server ->> Client : 계좌 등록 응답
+                Server ->> Client : 계좌 등록 응답 (txId 발급)
             	    
             ```
+
+        - Request
+            ```json
+            [POST] /v1/accounts HTTP/1.1
+            Authorization: Bearer {ACCESS_TOKEN}
+
+            {
+                "bankCode" : "052",
+                "accountNo" : "3333221230123"
+            }
+            ```
+
+        - Response
+            ```json
+            HTTP/1.1 201 Created
+            Content-type: application/json; charset=UTF-8
+            {
+                "payload" : {
+                    "txId" : "4214f44e-8853-4439-b2a6-150814a4d97a"
+                }
+            }
+            ```
+        
             
-    2. **1원 입금 랜덤코드 검증 [POST `/v1/accounts/verify`]**
+    2. **1원 입금 랜덤코드 검증**
         - 시퀀스 다이어그램
             
             ```mermaid
             sequenceDiagram
-                Client ->> Server : 랜덤 코드 검증 요청
+                Client ->> Server : 랜덤 코드 검증 요청 (with txId)
                 Server ->> Banking : 은행 랜덤 코드 검증 요청
                 Banking ->> Server : 은행 랜덤 코드 검증 응답
                 Server ->> DB : 계좌 인증 상태[인증 완료, 인증 실패] 업데이트
                 Server ->> Client : 랜덤 코드 검증 응답
             ```
-            
-    
+
+        - Request
+            ```json
+            [POST] /v1/accounts/verify HTTP/1.1
+            Authorization: Bearer {ACCESS_TOKEN}
+
+            {
+                "txId" : "4214f44e-8853-4439-b2a6-150814a4d97a",
+                "verificationCode" : "052"
+            }
+            ```
+
+        - Response
+            ```json
+            HTTP/1.1 200 OK
+            Content-type: application/json; charset=UTF-8
+            {
+                "payload" : null
+            }
+            ```
 
 ### 페이머니 사용을 위한 은행 입출금
 
@@ -115,7 +461,7 @@
 상품 구매를 위한 페이머니 기반 결제 / 송금 기능을 담당합니다. 회원의 페이머니 잔액에 따라 충전을 진행합니다. 상품을 결제한 데이터를 기반으로 결제 원장을 기록합니다.
 
 ### 페이머니로 상품 결제
-- **페이머니 기반 상품 결제 [POST  `/v1/payments/pay/productId}`]**
+- **페이머니 기반 상품 결제**
 
     - 시퀀스 다이어그램
         
@@ -133,9 +479,29 @@
             Payment ->> DB : 결제 원장[결제 완료, 결제 실패] 업데이트
             Payment ->> Client : 상품 결제 응답
         ```
+
+    - Request
+        ```json
+        [POST] /v1/payments/pay HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "productId" : 1,
+            "quantity" : 1
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
     
 ### 페이머니 충전
-- **페이머니 충전 [POST  `/v1/payments/charge`]**
+- **페이머니 충전**
 
     - 페이머니 충전 금액을 충전 요청, 상품 결제 필요 충전 금액 기준으로 **10,000원 단위 반올림** 하여 충전됩니다. 
 
@@ -149,9 +515,28 @@
             Payment ->> Payment : 페이머니 충전
             Payment ->> Client : 페이머니 충전 응답
         ```
+
+    - Request
+        ```json
+        [POST] /v1/payments/charge HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "amount" : 30000
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
     
 ### 페이머니 송금
-- **페이머니 송금[POST `/v1/payments/send`]**
+- **페이머니 송금**
 
     - 시퀀스 다이어그램
         
@@ -167,8 +552,27 @@
             
             Payment ->> Client : 페이머니 송금 응답
         ```
-    
 
+    - Request
+        ```json
+        [POST] /v1/payments/send HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "memberId" : 1,
+            "amount" : 30000
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+    
 ## 주문
 
 상품 구매를 위한 주문을 담당합니다. 주문한 상품 당 한개의 주문 데이터가 생성됩니다. 결제 당시에 주문 데이터(금액, 수량)으로 원장에 기록됩니다.
@@ -191,7 +595,7 @@
 
 결제된 상품에 대한 환불처리를 진행합니다.
 
-- **환불 요청 [POST `/v1/order/refund`]**
+- **환불 요청**
     
     ```mermaid
     sequenceDiagram
@@ -199,11 +603,30 @@
     		Order ->> Payment : 페이머니 환불 메소드 호출
     		Payment ->> Order : 페이머니 환불 메소드 응답
         
-        Order ->> DB : 주문 상태 [환불] 업데이트
+        Order ->> DB : 결제 상태 [환불] 업데이트
         Order ->> Client : 상품 환불 응답
     ```
-    
 
+    - Request
+        ```json
+        [POST] /v1/orders/refund HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "productId" : 1,
+            "quantity" : 1
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+    
 ## 정산
 
 상품 판매로 발생한 페이머니 매출 전표를 바탕으로 일별 가맹점 별 정산 금액을 산정하여 가맹점의 계좌로 입금합니다.
@@ -230,17 +653,72 @@
 
 페이머니 시스템에 등록된 회원을 관리합니다.
 
-- **회원 목록 조회 [GET `/v1/admin/members`]**
+- **회원 목록 조회**
     - 페이머니 시스템에 등록된 일반 회원과 가맹점주 회원 명단을 조회합니다.
+    - 회원 목록 리스트는 오프셋 기반의 페이징 리스트로 제공됩니다.
 
-- **회원 비활성화 [DELETE `/v1/admin/member/{memberId}`]**
+    - Request
+        ```json
+        [GET] /v1/admin/members?memberType= HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : {
+                [
+                    {
+                        "memberId" : 1,
+                        "email" : "test@gmail.com",
+                        "status" : "REGISTERED",
+                        "memberType" : "ADMIN",
+                        "balance" : 24000
+                    },
+                    {
+                        "memberId" : 2,
+                        "email" : "test3@gmail.com",
+                        "memberType" : "VENDOR",
+                        "status" : "VENDOR_REGISTERED",
+                        "balance" : 0
+                    },
+                ]
+                .
+                .
+                .
+            },
+            "size" : 10,
+            "offset" : 2,
+            "total" : 25
+        }
+        ```
+
+- **회원 비활성화**
     - 페이머니 시스템에 등록된 일반 회원과 가맹점주 회원을 관리자 권한으로 비활성화 처리합니다.
 
-### 가맹점주 회원 관리
+    - Request
+        ```json
+        Authorization: Bearer {ACCESS_TOKEN}
 
-페이머니 시스템에서 가맹점을 등록하고 상품을 판매할 수 있는 가맹점주 회원을 관리합니다.
+        [DELETE] /v1/admin/members/{memberId} HTTP/1.1
+        ```
 
-- **가맹점주 회원 등록 [POST `/v1/admin/vendors`]**
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+### 가맹점 & 가맹점주 회원 관리
+
+페이머니 시스템에서 가맹점을 등록하고 상품을 판매할 수 있는 가맹점주 회원과 가맹점 정보를 관리합니다.
+
+- **가맹점주 회원 & 가맹점 등록 요청**
     - 가맹점주는 이메일과 비밀번호로 회원 등록 신청을 받고, 이후 내부 심사 단계를 거칩니다. 심사 단계가 완료되면 1~2 영업일 내에 심사 결과가 신청 이메일로 전송됩니다.
         - 시퀀스 다이어그램
             
@@ -248,34 +726,162 @@
             
             sequenceDiagram
                 Client->> Admin : 가맹점주 등록 요청
+                Admin ->> DB : (등록 대기 상태의) 가맹점주 회원 계정 등록
+                Admin ->> DB : (등록 대기 상태의) 가맹점 등록
                 Admin ->> Admin : 내부 심사
             	    
             	  alt 심사 성공
             	    Admin ->> DB : 가맹점주 회원 상태(성공) 업데이트
+                    Admin ->> DB : 가맹점 상태(성공) 업데이트
             	    Admin ->> Client : 심사 성공 이메일 발송
             		else 심사 실패
             	    Admin ->> DB : 가맹점주 회원 상태(실패) 업데이트
+                    Admin ->> DB : 가맹점 상태(실패) 업데이트
             		  Admin ->> Client : 심사 실패 이메일 발송
             	  end
             ```
+
+        - Request
+            ```json
+            [POST] /v1/admin/members/vendors HTTP/1.1
+            Authorization: Bearer {ACCESS_TOKEN}
+
+            {
+                "email" : "vendor@gmail.com",
+                "password" : "abcdwef!@#ewef",
+                "bizRegNo" : "11232123123",
+                "name" : "가맹점",
+                "repName" : "대표자명",
+                "phoneNo" : "0321231232",
+            }
+            ```
+
+        - Response
+            ```json
+            HTTP/1.1 201 Created
+            Content-type: application/json; charset=UTF-8
+            {
+                "payload" : null
+            }
+            ```
             
 
-- **가맹점주 심사 결과 처리  [POST `/v1/admin/vendors/result` ]**
+- **가맹점주 심사 결과 처리**
     - 가맹점주 내부 심사 결과에 대한 처리를 진행합니다.
         1. 회원정보에 심사 결과에 상태를 업데이트 합니다
         2. 심사 결과를 가맹점주 이메일 주소로 전송합니다
 
-- **가맹점주 회원 리스트 조회 [GET `/v1/admin/vendors` ]**
-    - 페이머니 시스템에 등록된 가맹 점주들의 회원정보 리스트를 조회합니다.
+    - Request
+        ```json
+        [POST] /v1/admin/members/vendors/result HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
 
-- **가맹점주 회원 상세 조회 [GET `/v1/admin/vendors/{memberId}` ]**
+        {
+            "memberId" : 1
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **가맹점주 회원 상세 조회**
     - 페이머니 시스템에 등록된 가맹 점주들의 상세 회원 정보를 조회합니다.
 
-- **가맹점주 회원 정보 수정 [PUT `/v1/admin/vendors/{memberId}` ]**
+    - Request
+        ```json
+        [GET] /v1/admin/members/vendors/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 201 Created
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : { 
+                "memberId" : 1,
+                "email" : "test@gmail.com",
+                "status" : "VENDOR_REGISTERED",
+                "memberType" : "VENDOR",
+                "balance" : 24000
+            }
+        }
+        ```
+
+- **가맹점주 회원 정보 수정**
     - 페이머니 시스템에 등록된 가맹 점주의 상세 회원 정보를 수정합니다.
 
-- **가맹점주 회원 리스트 삭제  [DELETE `/v1/admin/vendors/{memberId}` ]**
+    - Request
+        ```json
+        [PUT] /v1/admin/members/vendors/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "memberId" : 1,
+            "email" : "test@gmail.com",
+            "status" : "VENDOR_REGISTERED",
+            "memberType" : "ADMIN"
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **가맹점주 회원 리스트 삭제**
     - 페이머니 시스템에 등록된 가맹 점주의 상세 회원 정보를 비활성화합니다.
+
+    - Request
+        ```json
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        [DELETE] /v1/admin/members/vendors/{memberId} HTTP/1.1
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
+
+- **가맹점 정보 수정**
+    - 페이머니 시스템에 등록된 가맹점의 정보를 수정합니다.
+
+    - Request
+        ```json
+        [PUT] /v1/admin/vendors/{vendorId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+
+        {
+            "bizRegNo" : "11232123123",
+            "name" : "가맹점",
+            "repName" : "대표자명",
+            "phoneNo" : "0321231232",
+        }
+        ```
+
+    - Response
+        ```json
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        {
+            "payload" : null
+        }
+        ```
 
 ### 중앙 법인 계좌 관리
 
