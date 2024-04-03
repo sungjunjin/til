@@ -12,9 +12,11 @@
     - 이메일, 비밀번호로 회원 가입합니다.
 
     - Request
-        ```json
+        ```
         [POST] /v1/members/sign-up HTTP/1.1
+        ```
 
+        ```json
         {
             "email" : "abcd@gmail.com",
             "password" : "abcd123ef!@"
@@ -22,9 +24,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 201 Created
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -34,9 +39,11 @@
     - 회원 이메일, 비밀번호로 로그인 합니다. 로그인 성공 시 Access Token과 Refresh Token을 발급합니다.
 
     - Request
-        ```json
+        ```
         [POST] /v1/members/sign-in HTTP/1.1
+        ```
 
+        ```json
         {
             "email" : "abcd@gmail.com",
             "password" : "abcd123ef!@"
@@ -44,9 +51,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
@@ -59,15 +69,18 @@
     - 로그인한 회원의 상세 정보를 조회 합니다.
 
     - Request
-        ```json
+        ```
         [GET] /v1/members/{memberId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 "email" : "test@gmail.com",
@@ -81,19 +94,24 @@
     - 로그인한 회원의 비밀번호를 수정 합니다.
 
     - Request
-        ```json
+        ```
         [PATCH] /v1/members/{memberId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "password" : "abcd123ef!@"
         }
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -103,41 +121,48 @@
     - 로그인한 회원의 회원 정보를 비활성화 하고, 탈퇴 처리를 진행합니다.
 
     - Request
-        ```json
+        ```
         [DELETE] /v1/members/{memberId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
         ```
 
 ## 인증 / 인가
-
 회원의 인증 / 인가 관련 기능을 제공합니다.
 
 - **액세스 토큰 재발급**
     - 액세스 토큰을 새롭게 생성하여 발급합니다.
 
     - Request
-        ```json
+        ```
         [POST] /v1/auth/refresh HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "refreshToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
         }
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 "accessToken" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
@@ -157,14 +182,17 @@
         - 상품 리스트는 커서 기반의 페이징 리스트로 제공됩니다.   
 
     - Request
-        ```json
+        ```
         [GET] /v1/products?size=&cursor=&category=&name=&price= HTTP/1.1
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 [
@@ -180,9 +208,6 @@
                         "imgUrl" : "https://cdn.example.com/image.jpg"
                     },
                 ]
-                .
-                .
-                .
             }
         }
         ```
@@ -191,14 +216,17 @@
     - 판매 중인 상품에 대한 상세 정보를 제공합니다.
 
     - Request
-        ```json
+        ```
         [GET] /v1/products/{productId} HTTP/1.1
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 "productId" : 1,
@@ -222,10 +250,12 @@
     - 가맹점에서 판매할 상품을 등록합니다.
 
     - Request
-        ```json
+        ```
         [POST] /v1/products/{vendorId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "name" : "테스트 상품",
             "quantity" : 10,
@@ -236,9 +266,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 201 Created
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -249,15 +282,18 @@
     - 가맹점별 상품 리스트는 오프셋 기반의 페이징 리스트로 제공됩니다.
 
     - Request
-        ```json
+        ```
         [GET] /v1/products/{vendorId}?offset=&size=&category=&name=&price= HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 [
@@ -273,9 +309,6 @@
                         "imgUrl" : "https://cdn.example.com/image.jpg"
                     },
                 ]
-                .
-                .
-                .
             },
             "size" : 10,
             "offset" : 2,
@@ -287,16 +320,18 @@
     - 가맹점별로 등록한 상품의 상세 정보를 조회합니다.
 
     - Request
-        ```json
-        Authorization: Bearer {ACCESS_TOKEN}
-
+        ```
         [GET] /v1/products/{vendorId}/{productId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 "productId" : 1,
@@ -316,10 +351,12 @@
     - 가맹점에서 등록한 상품에 대한 정보를 수정합니다.
 
     - Request
-        ```json
+        ```
         [PUT] /v1/products/{vendorId}/{productId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "vendorId" : 1,
             "productId" : 1,
@@ -332,9 +369,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -344,16 +384,18 @@
     - 가맹점에서 등록한 상품을 비활성화 합니다. 비활성화 된 상품은 상세조회를 할 수 없으며, 상품 리스트 조회 결과에서 제외됩니다.
 
     - Request
-        ```json
-        Authorization: Bearer {ACCESS_TOKEN}
-
+        ```
         [DELETE] /v1/products/{vendorId}/{productId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -382,10 +424,12 @@
             ```
 
         - Request
-            ```json
+            ```
             [POST] /v1/accounts HTTP/1.1
             Authorization: Bearer {ACCESS_TOKEN}
+            ```
 
+            ```json
             {
                 "bankCode" : "052",
                 "accountNo" : "3333221230123"
@@ -393,9 +437,12 @@
             ```
 
         - Response
-            ```json
+            ```
             HTTP/1.1 201 Created
             Content-type: application/json; charset=UTF-8
+            ```
+
+            ```json
             {
                 "payload" : {
                     "txId" : "4214f44e-8853-4439-b2a6-150814a4d97a"
@@ -417,10 +464,12 @@
             ```
 
         - Request
-            ```json
+            ```
             [POST] /v1/accounts/verify HTTP/1.1
             Authorization: Bearer {ACCESS_TOKEN}
+            ```
 
+            ```json
             {
                 "txId" : "4214f44e-8853-4439-b2a6-150814a4d97a",
                 "verificationCode" : "052"
@@ -428,9 +477,12 @@
             ```
 
         - Response
-            ```json
+            ```
             HTTP/1.1 200 OK
             Content-type: application/json; charset=UTF-8
+            ```
+
+            ```json
             {
                 "payload" : null
             }
@@ -481,10 +533,12 @@
         ```
 
     - Request
-        ```json
+        ```
         [POST] /v1/payments/pay HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "productId" : 1,
             "quantity" : 1
@@ -492,9 +546,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -517,19 +574,24 @@
         ```
 
     - Request
-        ```json
+        ```
         [POST] /v1/payments/charge HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "amount" : 30000
         }
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -554,10 +616,11 @@
         ```
 
     - Request
-        ```json
+        ```
         [POST] /v1/payments/send HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
-
+        ```
+        ```json
         {
             "memberId" : 1,
             "amount" : 30000
@@ -565,9 +628,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -608,10 +674,12 @@
     ```
 
     - Request
-        ```json
+        ```
         [POST] /v1/orders/refund HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "productId" : 1,
             "quantity" : 1
@@ -619,9 +687,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -658,15 +729,18 @@
     - 회원 목록 리스트는 오프셋 기반의 페이징 리스트로 제공됩니다.
 
     - Request
-        ```json
+        ```
         [GET] /v1/admin/members?memberType= HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : {
                 [
@@ -685,9 +759,6 @@
                         "balance" : 0
                     },
                 ]
-                .
-                .
-                .
             },
             "size" : 10,
             "offset" : 2,
@@ -699,16 +770,18 @@
     - 페이머니 시스템에 등록된 일반 회원과 가맹점주 회원을 관리자 권한으로 비활성화 처리합니다.
 
     - Request
-        ```json
-        Authorization: Bearer {ACCESS_TOKEN}
-
+        ```
         [DELETE] /v1/admin/members/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -742,10 +815,12 @@
             ```
 
         - Request
-            ```json
+            ```
             [POST] /v1/admin/members/vendors HTTP/1.1
             Authorization: Bearer {ACCESS_TOKEN}
+            ```
 
+            ```json
             {
                 "email" : "vendor@gmail.com",
                 "password" : "abcdwef!@#ewef",
@@ -757,9 +832,12 @@
             ```
 
         - Response
-            ```json
+            ```
             HTTP/1.1 201 Created
             Content-type: application/json; charset=UTF-8
+            ```
+
+            ```json
             {
                 "payload" : null
             }
@@ -772,19 +850,24 @@
         2. 심사 결과를 가맹점주 이메일 주소로 전송합니다
 
     - Request
-        ```json
+        ```
         [POST] /v1/admin/members/vendors/result HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "memberId" : 1
         }
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -794,15 +877,18 @@
     - 페이머니 시스템에 등록된 가맹 점주들의 상세 회원 정보를 조회합니다.
 
     - Request
-        ```json
+        ```
         [GET] /v1/admin/members/vendors/{memberId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 201 Created
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : { 
                 "memberId" : 1,
@@ -818,10 +904,12 @@
     - 페이머니 시스템에 등록된 가맹 점주의 상세 회원 정보를 수정합니다.
 
     - Request
-        ```json
+        ```
         [PUT] /v1/admin/members/vendors/{memberId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "memberId" : 1,
             "email" : "test@gmail.com",
@@ -831,9 +919,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -843,16 +934,18 @@
     - 페이머니 시스템에 등록된 가맹 점주의 상세 회원 정보를 비활성화합니다.
 
     - Request
-        ```json
-        Authorization: Bearer {ACCESS_TOKEN}
-
+        ```
         [DELETE] /v1/admin/members/vendors/{memberId} HTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
@@ -862,10 +955,12 @@
     - 페이머니 시스템에 등록된 가맹점의 정보를 수정합니다.
 
     - Request
-        ```json
+        ```
         [PUT] /v1/admin/vendors/{vendorId} HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
+        ```
 
+        ```json
         {
             "bizRegNo" : "11232123123",
             "name" : "가맹점",
@@ -875,9 +970,12 @@
         ```
 
     - Response
-        ```json
+        ```
         HTTP/1.1 200 OK
         Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
         {
             "payload" : null
         }
