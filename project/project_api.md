@@ -4,6 +4,29 @@
 
 [f-pay | DrawSQL](https://drawsql.app/teams/sj-13/diagrams/f-pay)
 
+
+## 공통
+API 호출의 공통적인 성공 응답과 실패 응답은 아래와 같습니다.
+
+### 성공 응답 예시
+Http Status Code와 payload 객체가 응답으로써 제공됩니다.
+
+```json
+{
+    "payload" : {
+        "key" : "value"
+    }
+}
+```
+
+### 실패 응답 예시
+Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
+```json
+{
+    "message" : "오류 메세지"
+}
+```
+
 ## 회원
 
 페이머니를 이용하는 일반 고객에게 회원가입과 로그인 서비스 및 고객 정보 조회 기능을 제공합니다.
