@@ -21,6 +21,7 @@ Http Status Code와 payload 객체가 응답으로써 제공됩니다.
 
 ### 실패 응답 예시
 Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
+
 ```json
 {
     "message" : "오류 메세지"
@@ -164,13 +165,12 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
 ## 인증 / 인가
 회원의 인증 / 인가 관련 기능을 제공합니다.
 
-- **액세스 토큰 재발급**
-    - 액세스 토큰을 새롭게 생성하여 발급합니다.
+- **액세스 토큰 & 리프레쉬 토큰 재발급**
+    - 액세스 토큰과 리프레쉬 토큰을 새롭게 생성하여 발급합니다.
 
     - Request
         ```
         [POST] /v1/auth/refresh HTTP/1.1
-        Authorization: Bearer {ACCESS_TOKEN}
         ```
 
         ```json
