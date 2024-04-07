@@ -154,5 +154,5 @@ public class WebConfig implements WebMvcConfigurer {
 
 Converter와 마찬가지로 WebMvcConfigurer 인터페이스를 구현한 자바 Configuration 어노테이션을 적용한 클래스를 통해 addFormatter 메소드를 오버라이딩 하여 Formatter를 등록해준다.
 
-## Spring Boot
+## Spring Boot 사용
 Spring Boot를 사용하면 Converter와 Formatter 인터페이스를 구현한 클래스를 빈으로 등록하면 자동으로 FormatterRegistry에 등록된다. 
