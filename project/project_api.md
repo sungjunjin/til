@@ -543,7 +543,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
         ```mermaid
         sequenceDiagram
             Client ->> Payment : 상품 결제 요청
-            Payment ->> DB : 결제 원장 기록
+            Payment ->> DB : 결제 요청 기록
         
             alt 잔액 부족 시 충전
                 Payment ->> Banking : 계좌 출금 메소드 호출
@@ -551,7 +551,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
                 Payment ->> Payment : 페이머니 충전
             end
             
-            Payment ->> DB : 결제 원장[결제 완료, 결제 실패] 업데이트
+            Payment ->> DB : 결제 결과[결제 완료, 결제 실패] 기록
             Payment ->> Client : 상품 결제 응답
         ```
 
