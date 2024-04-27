@@ -25,11 +25,11 @@
 
 **솔팅**
 
-단방향 해시 함수에서 추가적으로 임의 길이의 문자열을 생성하여 digest를 생성한느 방법을 솔팅이라고 한다.
+단방향 해시 함수에서 추가적으로 임의 길이의 문자열을 생성하여 digest를 생성하는 방법을 솔팅이라고 한다.
 
 ![](https://images.velog.io/images/sungjun-jin/post/cd6dfa9b-2968-4dee-9d25-e9cf1bda6c9c/image.png)
 
-원래 비밀번호인 `redfl0wer`를 알아내더라고 솔팅된 digest를 대상으로 패스워드 일치 여부를 확인하기 어렵다. 
+평문의 `redfl0wer`를 알아내더라고 솔팅된 digest를 대상으로 패스워드 일치 여부를 확인하기 어렵다. 
 
 일반적으로 모든 비밀번호가 랜덤한 고유의 솔트값을 가지고, 솔트값의 길이는 32 바이트 이상이어야 솔트와 digest를 추측하기 어렵다고 한다.
 
@@ -58,12 +58,8 @@ PBKDF2는 NIST(National Institute of Standards and Technology, 미국표준기�
 + 입력한 암호 기반으로 salt를 추가 정해진 횟수 만큼 해시 수행
 + 가볍고 구현하기 쉽다는 장점이 있고 검증된 해시 함수만을 사용한다
 
-공식 문서에 따르면 장고의 비밀번호 암호화 알고리즘은 기본적으로 PBKDF2를 사용한다고 한다.
-![](https://images.velog.io/images/sungjun-jin/post/ded1a711-3ce2-408e-b062-b4e54f97ae40/image.png)
-
 **2. scrypt** 
 PBKDF2와 유사한 Adaptive Key Derivation Function이며 Colin Percival이 2012년 9월 17일에 설계되었다. 다른 해시 알고리즘에 비해 많은 양의 메모리를 요구하지만 그만큼 더 성능이 좋다고 평가받는다. 
-
 
 정리하자면, 
 
