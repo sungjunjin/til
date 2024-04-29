@@ -533,7 +533,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
 
 ## 페이머니 시스템
 
-상품 구매를 위한 페이머니 기반 결제 / 송금 기능을 담당합니다. 회원의 페이머니 잔액에 따라 충전을 진행합니다. 상품을 결제한 데이터를 기반으로 결제 원장을 기록합니다.
+생성한 주문서를 기반으로 페이머니의 결제 / 송금 기능을 담당합니다. 회원의 페이머니 잔액에 따라 충전을 진행합니다. 결제한 데이터를 기반으로 결제 원장을 기록합니다.
 
 ### 페이머니로 상품 결제
 - **페이머니 기반 상품 결제**
@@ -544,6 +544,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
         sequenceDiagram
             Client ->> Payment : 상품 결제 요청
             Payment ->> DB : 결제 요청 기록
+            Payment ->> Order : 주문 상태 검증
         
             alt 잔액 부족 시 충전
                 Payment ->> Banking : 계좌 출금 메소드 호출
@@ -563,8 +564,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
 
         ```json
         {
-            "productId" : 1,
-            "quantity" : 1
+            "orderId" : "819b1e1e-f93f-4aca-92b5-dd740429f263"
         }
         ```
 
@@ -664,31 +664,62 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
     
 ## 주문
 
-상품 구매를 위한 주문을 담당합니다. 주문한 상품 당 한개의 주문 데이터가 생성됩니다. 결제 당시에 주문 데이터(금액, 수량)으로 원장에 기록됩니다.
+상품 구매를 위한 주문을 담당합니다. 주문한 상품 당 한개의 주문 데이터가 생성됩니다. 
 
-### 상품 결제
+### 주문 생성
 
-상품 결제 시 주문 데이터가 생성 / 업데이트 되는 과정은 다음과 같습니다.
+상품의 주문 생성을 진행합니다. 상품의 재고 검증, 차감이 이루어지고 고유한 주문 ID를 반환합니다.
 
-1. 결제 시작
-    1. 주문(order) 테이블에 `주문 진행중` 상태의 데이터 생성
-    2. 결제 기록(payment_hist) 테이블에 `결제 시작` 상태의 데이터 생성
-2. 결제 완료
-    1. 결제 기록(payment_hist) 테이블에 `결제 완료` 상태의 데이터 생성
-    2. 주문 상태를 `주문 완료`로 업데이트
-3. 결제 실패
-    1. 결제 기록(payment_hist)  테이블에 `결제 실패` 상태의 데이터 생성
-    2. 주문 상태를 `주문 실패` 로 업데이트
+- **주문 생성**
 
-### 상품 환불
+     - 시퀀스 다이어그램
+        
+        ```mermaid
+        sequenceDiagram
+            Client ->> Order : 주문 생성 요청
+            Order ->> Product : 상품 상태 및 재고 검증
+            Order ->> Vendor : 가맹점 상태 검증
+            Order ->> DB : 주문 데이터 생성 
+            Order ->> Client : 주문 생성 응답
+        ```
 
-결제된 상품에 대한 환불처리를 진행합니다.
+    - Request
+        ```
+        [POST] /v1/orderHTTP/1.1
+        Authorization: Bearer {ACCESS_TOKEN}
+        ```
+        ```json
+        {
+            "productId" : 1,
+            "quantity" : 2
+        }
+        ```
+
+    - Response
+        ```
+        HTTP/1.1 200 OK
+        Content-type: application/json; charset=UTF-8
+        ```
+
+        ```json
+        {
+            "payload" : {
+                "orderId" : "819b1e1e-f93f-4aca-92b5-dd740429f263"
+            }
+        }
+        ```
+
+### 주문 환불
+
+주문 완료된 상품에 대한 환불처리를 진행합니다.
 
 - **환불 요청**
+
+    - 시퀀스 다이어그램
     
     ```mermaid
     sequenceDiagram
-        Client ->>  Order : 상품 환불 요청
+        Client ->>  Order : 주문 환불 요청
     		Order ->> Payment : 페이머니 환불 메소드 호출
     		Payment ->> Order : 페이머니 환불 메소드 응답
         
@@ -704,8 +735,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
 
         ```json
         {
-            "productId" : 1,
-            "quantity" : 1
+            "orderId" : "819b1e1e-f93f-4aca-92b5-dd740429f263"
         }
         ```
 
