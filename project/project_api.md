@@ -685,7 +685,7 @@ Http Status Code와 오류 메세지가 응답으로써 제공됩니다.
 
     - Request
         ```
-        [POST] /v1/orderHTTP/1.1
+        [POST] /v1/orders HTTP/1.1
         Authorization: Bearer {ACCESS_TOKEN}
         ```
         ```json
