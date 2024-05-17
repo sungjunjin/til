@@ -1,6 +1,6 @@
 # 트리 (Tree)
 
-트리란 나무(tree)의 계층적 구조를 표현한 자료구조이다. 트리는 다음과 같은 용도에서 사용된다.
+트리란 ***계층적** 데이터를 표현한 자료구조이다. 트리는 다음과 같은 용도에서 사용된다.
 
 - 계층적 데이터를 표현
     - HTML이나 XML의 문서 개체 모델 (DOM)을 표현
@@ -23,7 +23,7 @@ B --> E{자식}
 ```
 **부모 - 자식 :** 연결된 노드들 간의 상대적인 관계를 나타낸다
 - 자식은 없을 수도 있고, 많이 있을 수도 있다
-- 자식 노드의 부모 노드는 무조건 **한개**이다
+- 부모 노드는 무조건 **한개**이다
 - 조부모, 형제자매 등의 개념도 있다
 
 ```mermaid
@@ -81,7 +81,7 @@ private class Node {
 ### 이진 탐색 트리 (Binary Search Tree)
 <img src="./img/bst.png" width="500" height="450"/>
 
-이진 트리는 최대 두개의 자식 노드를 가질 수 있다. 이진 검색 트리는 이진 트리에서 다음과 같은 조건을 추가한 트리 형태의 자료구조이다. 
+이진 탐색 트리는 자식이 최대 2개를 가지는 조건의 이진 트리에서 아래와 같은 조건을 추가한 자료구조이다. 
 
 - 왼쪽 자식은 언제나 부모보다 작다
 - 오른쪽 자식은 언제나 부모보다 크다
@@ -97,24 +97,87 @@ private class Node {
 검색 코드는 다음과 같이 재귀적으로 작성할 수 있다.
 
 ```java
-public static Node getNodeOrNull(Node node, int data) {
-    if(node == null) {
+public static Node getNodeOrNull(Node startNode, int data) {
+    if(startNode == null) {
         return null;
     }
     
     // 검색하려는 값이 현재 노드보다 크면 오른쪽 노드 검색
-    if(data > node.data) {
-        return getNodeOrNull(node.right, data);
+    if(data > startNode.data) {
+        return getNodeOrNull(startNode.right, data);
     }
     
     // 검색하려는 값이 현재 노드보다 작으면 왼쪽 노드 검색
-    if(data < node.data) {
-        return getNodeOrNull(node.left, data);
+    if(data < startNode.data) {
+        return getNodeOrNull(startNode.left, data);
     }
 
-    if(data == node.data) {
-        return node;
+    if(data == startNode.data) {
+        return startNode;
     }
 }
 ```
 
+#### BST 삽입
+이진 탐색 트리의 삽입 과정은 다음과 같다.
+1. 새로운 노드를 받아줄 수 있는 부모 노드를 찾는다
+    - 새로운 노드가 부모 노드보다 큰 값을 가질 때, 오른쪽 자식 노드가 비어있으면 삽입 가능
+    - 새로운 노드가 부모 노드보다 작은 값을 가질 때, 왼쪽 자식 노드가 비어있으면 삽입 가능
+
+2. 받아줄 수 없는 부모 노드가 없다면 자식 노드로 계속 내려가 받아줄 수 있는 노드를 찾는다.
+
+코드로 표현하자면 다음과 같다.
+
+```java
+public static void add(Node startNode, int data) {
+    if (data >= startNode.data) {
+        if (startNode.right == null) {
+            startNode.right = new Node(data);;
+        } else {
+            add(startNode.right, data);
+        }
+    } else {
+        if (startNode.left == null) {
+            startNode.left = new Node(data);;
+        } else {
+            add(startNode.left, data);
+        }
+    }
+}
+```
+
+#### BST 삭제
+이진 탐색 트리의 삭제 과정은 다음과 같다.
+1. 삭제 대상 노드를 찾는다
+2. 대상 노드와 바로 전 값을 가진 노드를 찾는다
+    - 왼쪽 하위 노드의 가장 오른쪽 리프 노드
+3. 두 노드를 교환한다
+4. 리프 노드로 교환된 삭제 대상 노드를 null로 바꾼다
+
+## 트리의 순회
+트리는 각 노드의 방문 순서를 정하는 대표적인 3가지 순회법이 있다.
+
+### 전위(pre-order) 순회
+1. 현재 노드
+2. 왼쪽 하위 트리
+3. 오른쪽 하위 트리
+
+### 중위(in-order) 순회
+1. 왼쪽 하위 트리
+2. 현재 노드
+3. 오른쪽 하위 트리
+
+### 후위(post-order) 순회
+1. 왼쪽 하위 트리
+2. 오른쪽 하위 트리
+3. 현재 노드
+
+## 레드 블랙 트리 (Red Black Tree)
+각 노드가 레드 혹은 블랙이 된다. 이 특성을 사용해 삽입과 삭제 연산 발생 시 스스로 균형을 잡는 (self balancing) 트리 구조를 유지할 수 있다는 장점이 있다.  
+
+### 레드 블랙 트리의 특성
+- 노드는 레드 혹은 블랙이다
+- 루트 노드는 블랙이다
+- 모든 리프 노드(NIL)은 블랙이다. Null Pointer가 모두 리프 노드이다
+- 레드 노드의 자식은 언제나 블랙이다
+- 어떤 노드와 리프 사이에 있는 블랙 노드 수는 동일하다
