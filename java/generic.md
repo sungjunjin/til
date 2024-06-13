@@ -221,7 +221,7 @@ error: type argument String is not within bounds of type-variable T
 ```
 
 ### <T super 타입>이 없는 이유
-제네릭은 `<T extends 타입>`과 같은 상한 경계 타입 파라미터를 허용하지만 반대로 `<T super 타입>` 처럼 하한 경계에 의한 타입 범위를 제한할 수 없다. 이유는 허용을 하게되면 결국에는 Object 클래스까지 허용 범위가 올라가게 되면서 `<T extens Object>`와 같은 쓸모없는 코드가 되어버리기 때문이다.
+제네릭은 `<T extends 타입>`과 같은 상한 경계 타입 파라미터를 허용하지만 반대로 `<T super 타입>` 처럼 하한 경계에 의한 타입 범위를 제한할 수 없다. 이유는 허용을 하게되면 결국에는 Object 클래스까지 허용 범위가 올라가게 되면서 `<T extends Object>`와 같은 쓸모없는 코드가 되어버리기 때문이다.
 
 ## 제네릭의 형변환과 와일드카드
 
