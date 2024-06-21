@@ -158,16 +158,51 @@ public static void add(Node startNode, int data) {
 트리는 각 노드의 방문 순서를 정하는 대표적인 3가지 순회법이 있다.
 
 ### 전위(pre-order) 순회
+```java
+public void traversePreOrder(Node node) {
+
+    if(node == null) {
+        return;
+    }
+    System.out.println(node.data);
+    traversePreOrder(node.left);
+    traversePreOrder(node.right);
+}
+```
 1. 현재 노드
 2. 왼쪽 하위 트리
 3. 오른쪽 하위 트리
 
 ### 중위(in-order) 순회
+```java
+public void traverseInOrder(Node node) {
+
+    if(node == null) {
+        return;
+    }
+
+    traverseInOrder(node.left);
+    System.out.println(node.data);
+    traverseInOrder(node.right);
+}
+```
 1. 왼쪽 하위 트리
 2. 현재 노드
 3. 오른쪽 하위 트리
 
 ### 후위(post-order) 순회
+```java
+public void traversePostOrder(Node node) {
+
+    if(node == null) {
+        return;
+    }
+
+    traversePostOrder(node.left);
+    traversePostOrder(node.right);
+    System.out.println(node.data);
+}
+```
 1. 왼쪽 하위 트리
 2. 오른쪽 하위 트리
 3. 현재 노드
