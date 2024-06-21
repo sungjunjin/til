@@ -55,6 +55,74 @@ public class Sum {
 }
 ```
 
+## 재귀함수의 스택 프레임
+메소드는 호출될때 마다 메모리에 스택 프레임이(Stack Frame) 생긴다. 스택 프레임의 구성 요소는 다음과 같다.
+- 매개변수
+- 지역변수
+- 복귀 주소 : 메소드가 실행 후 돌아 갈 주소
+
+```java
+public static void main(String[] args) {
+    Recursive recursive = new Recursive();
+    recursive.printNumRecursive(n);
+}
+
+public void printNumRecursive(int n) {
+    if(n == 0) {
+    } else {
+        printNumRecursive(n - 1);
+        System.out.println(n);
+    }
+}
+```
+
+실행 결과
+```
+1
+2
+3
+```
+예를 들어 위 코드와 같이 1부터 3까지의 수를 출력하는 재귀함수를 실행했을때 생성되는 스택 프레임이 모두 쌓인 결과는 다음과 같다.
+
+
+스택 프레임
+
+```
+printRecursive(0)
+┌─────────────────────┐
+│       Arguments     │ -> n = 0
+├─────────────────────┤
+│    Return Address   │ -> printRecursive(1) 메소드의 System.out.println(1) -> 콘솔에 1 출력 후 개행
+├─────────────────────┤
+│    Local Variables  │
+└─────────────────────┘
+printRecursive(1)
+┌─────────────────────┐
+│       Arguments     │ -> n = 1
+├─────────────────────┤
+│    Return Address   │ -> printRecursive(2) 메소드의 System.out.println(2) -> 콘솔에 2 출력 후 개행
+├─────────────────────┤
+│    Local Variables  │
+└─────────────────────┘
+printRecursive(2)
+┌─────────────────────┐
+│       Arguments     │ -> n = 2
+├─────────────────────┤
+│    Return Address   │ -> printRecursive(3) 메소드의 System.out.println(3) -> 콘솔에 3 출력 후 개행
+├─────────────────────┤
+│    Local Variables  │
+└─────────────────────┘
+printRecursive(3)
+┌─────────────────────┐
+│       Arguments     │ -> n = 3
+├─────────────────────┤
+│ Saved Frame Pointer │ -> main() 메소드의 마지막 라인
+├─────────────────────┤
+│    Local Variables  │
+└─────────────────────┘
+
+```
+
 ## 재귀함수의 장단점
 ### 장점
 재귀 함수의 장점은 다음과 같다.
